@@ -1,0 +1,49 @@
+@extends('layouts.app', [
+    'class' => '',
+    'elementActive' => 'horas',
+    'elementActive2' => ''
+])
+<style>
+    .col-centered{
+    float: none;
+    margin: 0 auto;
+}
+</style>
+@section('content')
+<div class="content">
+    <input type="hidden" value="" id="data_voltar_calend">
+
+    <!-- depois que seleciona a data no calendario -->
+    <div class="row">
+        <div class="col-md-12" id="card_horas" style="z-index: 9; background-color: none !important; " ></div>
+    </div>
+    <div class="row">
+        <div class="col-md-10" id="card_horas_lista" ></div>
+    </div>
+
+    <!-- antes de selecionar a data no calendario -->
+    <div class="row" >
+        <div class="col-md-12" id="card_calendario" >            
+        </div>        
+    </div>
+    <div class="row">
+        <div class="col-md-12" id="card_lista"></div>
+    </div>
+    <div id="calendar"></div>
+    @extends('pages.horas.script_page')  
+    
+</div>
+
+
+ 
+        <script>
+            $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+
+            $(document).ready(function () { 
+                add_cards(null);  
+            }); 
+
+
+        </script>
+
+@endsection
