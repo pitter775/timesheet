@@ -225,7 +225,7 @@ function converte_em_horas($segundos){
       },
       navLinkDayClick: function(date, jsEvent) {
         console.log('navLinkDayClick');
-        console.log(jsEvent.toElement.attributes);
+        // console.log(jsEvent.toElement.attributes);
 
         var data_inicio = new Date(date.toISOString());
         let data_inicio_ok = ((data_inicio.getFullYear() )) + "-" + ((data_inicio.getMonth() + 1)) + "-" + data_inicio.getDate();

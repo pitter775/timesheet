@@ -134,7 +134,13 @@
       /* .cards_margin { margin-bottom: 0px; margin-top: 0px;}
       .cards_margin1 { margin-bottom: 0px; margin-top: 0px;}
       .cards_margin2 { margin-bottom: 0px; margin-top: 0px;} */
+
+      /* .btrelatorio{ display: none;} */
     }
+
+    @media (max-width:768px){
+    .btrelatorio{ display: none;}   
+  }
   /*
   i wish this required CSS was better documented :(
   https://github.com/FezVrasta/popper.js/issues/674

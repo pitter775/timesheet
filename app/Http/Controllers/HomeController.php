@@ -157,9 +157,25 @@ class HomeController extends Controller
         }
         return $userArray;
     }
-
-
     public function atu_banco(){
+        
+            $request = array('data_inicio' =>'01/01/2021', 'data_fim'=> '31/12/2021', 'usuario'=>32, 'contrato'=>null, 'municipio'=>null, 'produto'=>null, 'departamento'=>null, 'atividade'=>56, 'empreendimento'=>null, 'equipe'=>null, 'alocacao'=>null, 'funcao'=>null);
+            $request = (object)$request;
+
+            // total horas por empreendimento
+            $colunas = 'e.id AS id,  users.email, users.name, contratos.ctnome, atividades.atdescricao, e.horas, periodos.datainicio';
+            $groupBy = '';    
+            $orderBy = 'ORDER BY periodos.datainicio asc';        
+            $veratividade = $this->filtros($request, $colunas, $groupBy, $orderBy); 
+
+            return view('pages.teste', compact('veratividade'));  
+
+            // ddd($veratividade);
+
+
+
+
+
 
         // $ultimoregisto = SELECT registro FROM tabela WHERE coluna = 23 ORDER BY id DESC limit 1;
         // $ultimoregisto = DB::select( DB::raw(
@@ -178,12 +194,12 @@ class HomeController extends Controller
 
         // }
 
-        $userEmails = $this->userpreenche();
+        // $userEmails = $this->userpreenche();
 
 
         // $userEmails = $this->userpreenche();
 
-        ddd($userEmails);
+        // ddd($userEmails);
 
         // // $data_inicio = date("Y-m-d");
         // // $data_fim = date("Y-m-d");
@@ -221,7 +237,29 @@ class HomeController extends Controller
 
 
 
-
+        // $evento = Evento::all();
+        //             foreach($evento as $value){
+        //                 if($value->users_id == 32){
+        //                      $periodo = Periodo::find($value->periodos_id);
+        //                      if($periodo->datainicio > '2021-01-00'){
+        //                         $novo = Evento::find($value->id);
+        //                         $novo->tarifa = '183,35';
+        //                         $novo->alocacaos_id = 42; //apoio 14 - obras 18 - proj pac 13 - gestao 42
+        //                         $novo->departamentos_id = 7; //jica 9 - M02 8 - vio 12 - me01 7
+        //                         $novo->funcaos_id = 11; // enjenheiro jr 12;  enjeito seniior 11
+        //                         $novo->equipes_id = 3;  
+        //                         $novo->save();  
+        //                         echo 'ok - '; 
+        //                      }
+        //                     // $usuario = User::find($value->users_id);
+        //                     // $novo = Evento::find($value->id);
+        //                     // $novo->departamentos_id = $usuario->departamentos_id;
+        //                     // $novo->save();    
+        //                 }
+                
+        //     }  
+        //     echo '<br>';
+        //     echo 'terminou';
            
 
 
