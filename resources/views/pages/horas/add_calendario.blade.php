@@ -73,7 +73,7 @@ function converte_em_horas($segundos){
     selectable: true,
     weekends: false,
     height: "auto",
-
+    selectLongPressDelay: 25,
     initialDate: data_inicial,
     events: [
 
@@ -210,19 +210,26 @@ function converte_em_horas($segundos){
           add_atividade(data,'1');
         }
       },
-      select: function(info) {
+      eventMouseEnter: function(info){
         console.log(info);
-        dados_select = {inicio:info.startStr, fim:info.endStr};
-        $.get(appUrl+'/'+modulo+'/permissao_selecao', dados_select, function(retorno){
-          console.log(retorno);
-          if(retorno == 0){
-             data = [info.startStr, info.endStr];
-            add_atividade(data);
-          }else{
-            demo.showNotification('top','center', 'danger', 'Seleção não permitida!');
-          }
-        });
       },
+      function( eventMouseEnter ) { 
+        console.log(info);
+      },
+      // select: function(info) {
+      //   console.log('info');
+      //   console.log(info);
+      //   dados_select = {inicio:info.startStr, fim:info.endStr};
+      //   $.get(appUrl+'/'+modulo+'/permissao_selecao', dados_select, function(retorno){
+      //     console.log(retorno);
+      //     if(retorno == 0){
+      //        data = [info.startStr, info.endStr];
+      //       add_atividade(data);
+      //     }else{
+      //       demo.showNotification('top','center', 'danger', 'Seleção não permitida!');
+      //     }
+      //   });
+      // },
       navLinkDayClick: function(date, jsEvent) {
         console.log('navLinkDayClick');
         // console.log(jsEvent.toElement.attributes);

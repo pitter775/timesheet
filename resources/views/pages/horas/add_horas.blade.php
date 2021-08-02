@@ -33,6 +33,10 @@
     .divform{ width: 100px;}
     .formhoras{ width: 37px !important; padding: 0 !important; text-align: center; color: #10a031; font-weight: 500;}
     
+    @media only screen and (max-width: 750px) {
+        .btssalvar{ position: fixed; top: 100px; right: 10px; }
+        .percent{ position: absolute; top: -55px; left: 42px; font-weight: bold; display:inline-block}
+    }
     @media only screen and (max-width: 600px) {
 
         .rowatividade .md-form{ width: 100px !important;} 
