@@ -1,5 +1,5 @@
 
-<div class="row">
+
 <?php 
 function horas_segundos2($total){
     $horas = floor($total / 3600);
@@ -26,7 +26,9 @@ foreach($lista_funcaos as $value){
 
     
     ?>
-    <div class="col-md-2" >
+
+ 
+        <div class="col-xl-2 col-lg-4 col-md-4 col-sm-4" >
             <div class="card cardpeque caduserfun" style="position: relative; height: 110px" data-funcao = "{{$value['fndescricao']}}">
                 <div class="card-header">
                     <h6 class="icohear" style="font-weight: 600; color: #777"><i class="fas fa-running"></i> {{$value['totaluser']}}</h6>
@@ -102,11 +104,11 @@ foreach($lista_funcaos as $value){
                     </div>
                 </div>
             </div>
-    </div>
+        </div>
     
 <?php }?>
 
-</div>
+
 
 <script>
 

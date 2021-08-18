@@ -52,6 +52,9 @@ var chartalocacao_dep_rs  = echarts.init(document.querySelector('#grafico_alocac
                     <?php
                     $cont_cor = 9;
                     foreach($lista_alocacoes as $value){
+
+                            // print_r($value['custo']);
+                        
                             echo '{';
                             echo 'value: '.$value['custo'].', name: "'.$value['aldescricao'].'", pess: "'. $value['totaluser'].'",   horas: "'. horas_segundos2($value['total']).'", itemStyle: { color: "rgb( 72, 103, 146, 0.'.$cont_cor.'9)" }';
                             echo '},';

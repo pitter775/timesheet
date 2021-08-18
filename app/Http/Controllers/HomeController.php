@@ -159,16 +159,16 @@ class HomeController extends Controller
     }
     public function atu_banco(){
         
-            $request = array('data_inicio' =>'01/01/2021', 'data_fim'=> '31/12/2021', 'usuario'=>32, 'contrato'=>null, 'municipio'=>null, 'produto'=>null, 'departamento'=>null, 'atividade'=>56, 'empreendimento'=>null, 'equipe'=>null, 'alocacao'=>null, 'funcao'=>null);
-            $request = (object)$request;
+            // $request = array('data_inicio' =>'01/01/2021', 'data_fim'=> '31/12/2021', 'usuario'=>32, 'contrato'=>null, 'municipio'=>null, 'produto'=>null, 'departamento'=>null, 'atividade'=>56, 'empreendimento'=>null, 'equipe'=>null, 'alocacao'=>null, 'funcao'=>null);
+            // $request = (object)$request;
 
-            // total horas por empreendimento
-            $colunas = 'e.id AS id,  users.email, users.name, contratos.ctnome, atividades.atdescricao, e.horas, periodos.datainicio';
-            $groupBy = '';    
-            $orderBy = 'ORDER BY periodos.datainicio asc';        
-            $veratividade = $this->filtros($request, $colunas, $groupBy, $orderBy); 
+            // // total horas por empreendimento
+            // $colunas = 'e.id AS id,  users.email, users.name, contratos.ctnome, atividades.atdescricao, e.horas, periodos.datainicio';
+            // $groupBy = '';    
+            // $orderBy = 'ORDER BY periodos.datainicio asc';        
+            // $veratividade = $this->filtros($request, $colunas, $groupBy, $orderBy); 
 
-            return view('pages.teste', compact('veratividade'));  
+            // return view('pages.teste', compact('veratividade'));  
 
             // ddd($veratividade);
 
@@ -239,18 +239,18 @@ class HomeController extends Controller
 
         // $evento = Evento::all();
         //             foreach($evento as $value){
-        //                 if($value->users_id == 32){
+        //                 if($value->users_id == 126 ){
         //                      $periodo = Periodo::find($value->periodos_id);
-        //                      if($periodo->datainicio > '2021-01-00'){
+        //                     //  if($periodo->datainicio > '2021-02-00' &&  $periodo->datainicio < '2021-02-30'){           
         //                         $novo = Evento::find($value->id);
-        //                         $novo->tarifa = '183,35';
-        //                         $novo->alocacaos_id = 42; //apoio 14 - obras 18 - proj pac 13 - gestao 42
-        //                         $novo->departamentos_id = 7; //jica 9 - M02 8 - vio 12 - me01 7
-        //                         $novo->funcaos_id = 11; // enjenheiro jr 12;  enjeito seniior 11
+        //                         $novo->tarifa = '123,15';
+        //                         // $novo->alocacaos_id = 18; //apoio 14 - obras 18 - proj pac 13 - gestao 42
+        //                         // $novo->departamentos_id = 8; //jica 9 - M02 8 - vio 12 - me01 7
+        //                         $novo->funcaos_id = 19; // enjenheiro jr 12;  enjeito seniior 11 ; tecnologo 19
         //                         $novo->equipes_id = 3;  
         //                         $novo->save();  
         //                         echo 'ok - '; 
-        //                      }
+        //                     //  }
         //                     // $usuario = User::find($value->users_id);
         //                     // $novo = Evento::find($value->id);
         //                     // $novo->departamentos_id = $usuario->departamentos_id;
@@ -264,29 +264,29 @@ class HomeController extends Controller
 
 
 
-        // $evento = Evento::all();
-            //         foreach($evento as $value){
-            //             if($value->users_id == 45){
-            //                  $periodo = Periodo::find($value->periodos_id);
-            //                  if($periodo->datainicio > '2021-05-18'){
-            //                     $novo = Evento::find($value->id);
-            //                     $novo->tarifa = '183,35';
-            //                     $novo->alocacaos_id = 42; //apoio 14 - obras 18 - proj pac 13 - gestao 42
-            //                     $novo->departamentos_id = 7; //jica 9 - M02 8 - vio 12 - me01 7
-            //                     $novo->funcaos_id = 11; // enjenheiro jr 12;  enjeito seniior 11
-            //                     $novo->equipes_id = 3;  
-            //                     $novo->save();  
-            //                     echo 'ok - '; 
-            //                  }
-            //                 // $usuario = User::find($value->users_id);
-            //                 // $novo = Evento::find($value->id);
-            //                 // $novo->departamentos_id = $usuario->departamentos_id;
-            //                 // $novo->save();    
-            //             }
+        $evento = Evento::all();
+                    foreach($evento as $value){
+                        if($value->users_id == 134){
+                             $periodo = Periodo::find($value->periodos_id);
+                             if($periodo->datainicio < '2020-08-33' &&  $periodo->datainicio > '2020-06-31'){
+                                $novo = Evento::find($value->id);
+                                $novo->tarifa = '153,03';
+                                // $novo->alocacaos_id = 42; //apoio 14 - obras 18 - proj pac 13 - gestao 42
+                                // $novo->departamentos_id = 7; //jica 9 - M02 8 - vio 12 - me01 7
+                                $novo->funcaos_id = 22; // enjenheiro jr 12;  enjeito seniior 11, tecnologo 19 enjeiro pleno 22
+                                // $novo->equipes_id = 3;  
+                                $novo->save();  
+                                echo 'ok ->'.$value->id. ' -'; 
+                             }
+                            // $usuario = User::find($value->users_id);
+                            // $novo = Evento::find($value->id);
+                            // $novo->departamentos_id = $usuario->departamentos_id;
+                            // $novo->save();    
+                        }
                 
-            // }  
-            // echo '<br>';
-            // echo 'terminou';   
+            }  
+            echo '<br>';
+            echo 'terminou';   
         
         
                 // return $this->separa_datas('2020-01-01','2020-05-01');
@@ -1191,6 +1191,7 @@ class HomeController extends Controller
         $cont = 0;
         $totaldepH = 0;
         $totaldepR = 0;
+        $lista_alocacoes[] = '';
         foreach($lista_contratos_horas as $value){
             $colunas = 'e.id AS id, e.users_id, e.tarifa, e.horas, alocacaos.id AS idaloc, alocacaos.aldescricao';
             $groupBy = ''; 
