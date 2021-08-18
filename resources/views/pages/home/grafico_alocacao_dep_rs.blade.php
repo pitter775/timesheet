@@ -3,8 +3,9 @@
     $porcentagem2 = ($totaldepR / $totalvalores) * 100;
     $porcentagem2 = round ($porcentagem2);
     $texto2 = 'R$ '.number_format($totaldepR,2, ',', '.').'\n'.$porcentagem2.'% ';
+    // $lista_alocacoes = collect($lista_alocacoes)->sortBy('custo')->reverse()->toArray();
+    //  dd($lista_alocacoes); 
 
-    
 ?> 
 
 <div id="grafico_alocacao_dep_rs" style="height: 400px; width: 100%;"></div>
@@ -52,14 +53,20 @@ var chartalocacao_dep_rs  = echarts.init(document.querySelector('#grafico_alocac
                     <?php
                     $cont_cor = 9;
                     foreach($lista_alocacoes as $value){
+                        
+                        if(isset($value['custo'])){
 
+                        
                             // print_r($value['custo']);
+                            // ${number_format(params[0].data.value, 0, ',', '.')   }
                         
                             echo '{';
+                            // echo 'value: '.$value['custo'].', name: "'.$value['aldescricao'].'", pess: "'. $value['totaluser'].'",   horas: "'. horas_segundos2($value['total']).'", itemStyle: { color: "rgb( 72, 103, 146, 0.'.$cont_cor.'9)" }';
                             echo 'value: '.$value['custo'].', name: "'.$value['aldescricao'].'", pess: "'. $value['totaluser'].'",   horas: "'. horas_segundos2($value['total']).'", itemStyle: { color: "rgb( 72, 103, 146, 0.'.$cont_cor.'9)" }';
                             echo '},';
                             $cont_cor = $cont_cor - 2;
-                        }    
+                        }
+                    }    
                     ?>
 
                 ],
@@ -73,6 +80,8 @@ var chartalocacao_dep_rs  = echarts.init(document.querySelector('#grafico_alocac
         ]
     };
     chartalocacao_dep_rs.setOption(option_ALO_rs);
+
+ 
 
     window.addEventListener('resize',function(){
         chartalocacao_dep_rs.resize();

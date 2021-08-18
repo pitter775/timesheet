@@ -1147,6 +1147,7 @@ class HomeController extends Controller
                 $soma_valores = $soma_valores + $valor;
                 $soma_hora = $soma_hora +  $segundos ;
             }
+            // $soma_valores = number_format($soma_valores,2, ',', '.');
             $pess_unicos = array_unique($pess);            
             $lista_alocacoes[] = ['id'=>$value->id, 'aldescricao'=>$value->aldescricao,  'total'=>$value->total, 'custo'=>$soma_valores, 'totaluser'=>count($pess_unicos)];   
             $cont =   $cont + 1;

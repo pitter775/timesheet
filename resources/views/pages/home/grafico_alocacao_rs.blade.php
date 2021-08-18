@@ -6,7 +6,7 @@
     // var_dump($lista_alocacoes);
     // echo '</pre>';
     $lista_alocacoes = collect($lista_alocacoes)->sortBy('custo')->reverse()->toArray();
-    // dd($lista_alocacoes);
+    //  dd($lista_alocacoes);
 ?> 
 
 <script>

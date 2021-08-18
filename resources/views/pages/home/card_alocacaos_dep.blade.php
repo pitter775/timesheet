@@ -112,7 +112,8 @@ function horas_segundos2($total){
                             <tbody>
                             <?php $total_segundos = $total_horas[0]->total; $cont_tab = 0 ?>
 
-                            @foreach($lista_alocacoes as $key => $value)                        
+                            @foreach($lista_alocacoes as $key => $value)    
+                                @if(isset($value['id']))                    
                                 <tr class="shadomtable">
                                     <td>{{$value['id']}}</td>
                                     <td style="position: relative; padding:2px">
@@ -124,6 +125,7 @@ function horas_segundos2($total){
                                     @endif
                                     <td class="text-right"><?php echo horas_segundos($value['total']); $cont_tab = $cont_tab + 1 ?></td>
                                 </tr>
+                                @endif
                             @endforeach 
                             </tbody>
                         </table> 
