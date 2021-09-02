@@ -286,7 +286,7 @@
     });
 
     function carregar_cards(card, param = null){
-        if(param == 'Todos'){ param = null}     
+        if(param == 'Todos'){ param = null}      
   
         let atualizar = true;
         let div = '#'+card;      

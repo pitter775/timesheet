@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contrato_user;
 use App\Models\Evento;
 use App\Models\Funcao;
 use App\Models\Periodo;
@@ -42,16 +43,102 @@ class HorasController extends Controller
           case 'lista_mes_atual':               
             return $this->lista_mes_atual($anima_lista,$request);
             break;
-          case 'lista_ano_atual':               
-            return $this->lista_ano_atual($anima_lista,$request);
-            break;
+        case 'lista_ano_atual':               
+          return $this->lista_ano_atual($anima_lista,$request);
+          break;
           case 'add_horas':               
             return $this->add_horas($anima_create, $request);
             break;
         case 'create':
           return $this->add_create($anima_create, $request);
             break;
+        case 'editar_atv':
+          return $this->editar_atv($request);
+            break;
+        case 'add_atv':
+          return $this->add_atv($request);
+            break;
+        case 'remove_atv':
+          return $this->remove_atv($request);
+            break;
       }      
+    }
+    function cont_pro($cont_pro_id, $ct, $idatv = null ){
+      $cp = DB::table('contrato_produtos AS c')
+      ->where([['c.id', $cont_pro_id]])
+      ->first();
+
+      if($idatv){
+        $nome = DB::table('atividades AS a')
+        ->where([['a.id', $idatv]])
+        ->first()->atdescricao;
+      }
+     
+
+
+
+      if($ct == 'contrato'){return $cp->contratos_id;}
+      if($ct == 'produto'){return $cp->produtos_id;}      
+      if($ct == 'atvnome'){return $nome;}      
+    }
+    public function add_atv(Request $request){
+        $dados = new Contrato_user();
+        $dados->users_id = Auth::user()->id; 
+        $dados->contratos_id =  $this->cont_pro($request->contproid, 'contrato');
+        $dados->produtos_id = $this->cont_pro($request->contproid, 'produto');
+        $dados->atividades_id = $request->ativid;
+        $dados->save(); 
+        $retorno = [
+          'contratos_id'=>$this->cont_pro($request->contproid, 'contrato'), 
+          'produtos_id'=>$this->cont_pro($request->contproid, 'produto'), 
+          'atdescricao'=>$this->cont_pro($request->contproid, 'atvnome', $request->ativid), 
+          'atividades_id'=>$request->ativid, 
+        ];
+        return $retorno;
+    }
+   
+    public function remove_atv(Request $request){
+        $deletar = Contrato_user::where([['contratos_id', $this->cont_pro($request->contproid, 'contrato')],
+                                        ['produtos_id', $this->cont_pro($request->contproid, 'produto')],
+                                        ['atividades_id', $request->ativid],
+                                        ['users_id', Auth::user()->id],]);
+        $deletar->delete();
+        $retorno = [
+          'contratos_id'=>$this->cont_pro($request->contproid, 'contrato'), 
+          'produtos_id'=>$this->cont_pro($request->contproid, 'produto'), 
+          'atdescricao'=>$this->cont_pro($request->contproid, 'atvnome', $request->ativid), 
+          'atividades_id'=>$request->ativid, 
+        ];
+        return $retorno;
+    }
+
+
+    public function editar_atv(Request $request){
+        $teste = $request->card;
+        $dados_lista = DB::table('contrato_users AS c')
+          ->join('contratos', 'contratos.id', 'c.contratos_id')
+          ->join('produtos', 'produtos.id', 'c.produtos_id')          
+          ->join('atividades', 'atividades.id', 'c.atividades_id')          
+          ->select('*', 'c.id AS id')
+          ->where([['c.users_id', Auth::user()->id],['contratos.id', $request->contid],['produtos.id', $request->prid] ])
+          ->get();
+
+        $contrato_produto = DB::table('contrato_produtos AS c')
+          ->join('contratos', 'contratos.id', 'c.contratos_id')
+          ->join('produtos', 'produtos.id', 'c.produtos_id')
+          ->select('*', 'c.id AS id')
+          ->where([['contratos.id', $request->contid],['produtos.id', $request->prid] ])
+          ->first()->id;
+
+          if($contrato_produto){
+            $cont_prod_atv = DB::table('contrato_produto_atividades AS c')          
+            ->join('atividades', 'atividades.id', 'c.atividades_id')          
+            ->select('*', 'c.id AS id')
+            ->where([['c.contrato_produtos_id', $contrato_produto]])
+            ->get();
+          }
+
+        return view("pages.horas.edit_prod_lista", compact('dados_lista', 'cont_prod_atv'));
     }
     public function permissao_selecao(Request $request){
       $data_fim = date('Y-m-d', strtotime("-1 day", strtotime($request->fim)));
@@ -301,6 +388,7 @@ class HorasController extends Controller
 
       // lista para preencher as horas 
       $contrato_users = DB::table('contrato_users AS u')
+      // ->rightjoin('contrato_produtos', 'contrato_produtos.produtos_id', 'u.produtos_id')
       ->join('contratos', 'contratos.id', 'u.contratos_id')
       ->join('produtos', 'produtos.id', 'u.produtos_id')
       ->join('atividades', 'atividades.id', 'u.atividades_id')
@@ -309,6 +397,12 @@ class HorasController extends Controller
       ->orderBy('atividades.atdescricao','asc')
       ->select('*', 'u.id AS id')
       ->where('u.users_id', Auth::user()->id)
+      ->get();
+
+      //  ddd($contrato_users);
+
+      $contpro = DB::table('contrato_produtos AS c')
+      ->select('c.contratos_id AS contratos_id','c.produtos_id AS produtos_id' )
       ->get();
 
       $horas_banco = DB::table('eventos AS u')
@@ -335,7 +429,7 @@ class HorasController extends Controller
 
 
 
-      return view("pages.horas.add_horas", compact('add_anima','contrato_users', 'data_inicio', 'data_fim','total_dias','total_horas', 'totalats',
+      return view("pages.horas.add_horas", compact('add_anima','contrato_users', 'contpro', 'data_inicio', 'data_fim','total_dias','total_horas', 'totalats',
                   'data_voltar','data_inicio_s','data_fim_s','totalcad','data_inicio_rec','data_fim_rec'));
     }
     public function add_lista($add_anima, $request){

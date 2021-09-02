@@ -2,9 +2,71 @@
 <script>
     var appUrl ="{{env('APP_URL')}}"; 
     var modulo = 'horas'; 
+    var allcontratos = []; 
+    var allcontratostemp = []; 
+    var arrayteste = []; 
 
+    function criarcontartos(){
+        // arrayteste.push({name: "mensagem", value: ed_editorData});
+        $( ".cardcontratosid" ).each(function() { 
+            let ctnumero =  $( this ).attr("data-ctnumero"); 
+            let contratos_id =  $( this ).attr("data-contratos_id"); 
+            allcontratos.push ({ctnumero: ctnumero, contratos_id: contratos_id});
+        });
+        console.log(allcontratos);
+    }
+
+   
+    // function buscarinit(dados){
+    //     allcontratos = dados;
+    // }
+    function filtrarbusca(){
+        let busca = $('#buscactnome').val();
+        let filtered = allcontratos.filter(numero => numero.ctnumero.includes(busca));
+        allcontratostemp = []; 
+
+        // console.log('filtered');
+        // console.log(filtered);
+
+
+        $( ".cardcontratosid" ).each(function() {            
+            let id =  $( this ).attr("data-contratos_id");   
+            const result = filtered.find( numero => numero.contratos_id === id );
+            allcontratostemp.push(result);
+        });
+        $( ".cardcontratosid" ).css("display", "none");
+        limpardados(allcontratostemp);
+        
+    }
+    function limpardados(dados){
+        for(const member of dados){
+            if(member){
+                $( ".cardcontratosid" ).each(function() {   
+                    let id =  $( this ).attr("data-contratos_id");   
+                    if(id == member.contratos_id){
+                        $( this ).css("display", "block"); 
+                    } 
+                });
+            }            
+        }
+    }
+
+
+    function editar_atv(prid, contid){
+        var dados_serealize = [];
+            dados_serealize.push(
+                {name: "card", value: 'editar_atv'},
+                {name: "prid", value: prid},
+                {name: "contid", value: contid},
+            );
+        $.get(appUrl+'/'+modulo+'/add/editar_atv-0', dados_serealize, function(retorno2){
+            $('#retorno_editatv').html(retorno2);
+        });
+    }
 
     
+   
+
 
     function add_cards(card, id, tipo){
         switch (card) {

@@ -54,6 +54,7 @@
        
     }
 </style>
+
 <div class="row" style="position: relative;" id="card_add_horas">
 
     
@@ -69,6 +70,10 @@
                
                 </div>
                 <div class="row">
+
+                <?php 
+                    // dd($contrato_users);
+                ?>
                
                     <form name="form_horas" id="form_horas" class="col-md-12"> 
                     @csrf  
@@ -84,8 +89,18 @@
                         
                   
                         <div id="accordion-2" role="tablist" aria-multiselectable="true" class="card-collapse"> 
-                            @if(!count($contrato_users) == 0)      
-                            <h4 class="card-title" style="font-size: 16px; font-weight: 400;">Distribua as horas nos contratos</h4>     
+                            @if(!count($contrato_users) == 0)     
+                            <div class="row">
+                                <div class="col-md-8">   
+                                    <h4 class="card-title" style="font-size: 16px; font-weight: 400;">Distribua as horas nos contratos</h4>     
+                                </div>
+                                <div class="col-md-4">                                                
+                                    <div class="md-form">
+                                        <input type="text" id="buscactnome" name="ctnome" class="form-control" value="" required="">
+                                        <label for="ctnome" class=""> <i class="fas fa-search"></i> Nº</label>
+                                    </div>
+                                </div>
+                            </div>
                             @endif                
                             @if(count($contrato_users) == 0)
                             <h4 class="card-title" style="font-size: 16px; font-weight: 400; color:#f93e3e">Você não tem contratos adicionados</h4>
@@ -103,7 +118,7 @@
                             ?>
                                 @if($value->ctnome !== $contratos_name)
                                     <?php $contratos_name = $value->ctnome; ?>
-                                    <div class="card card-plain">
+                                    <div class="card card-plain cardcontratosid" data-ctnumero ="{{$value->ctnumero}}" data-contratos_id ="{{$value->contratos_id}}" data-nome="{{$value->ctnome}}">
                                         <div class="card-header" role="tab" id="heading{{$value->contratos_id}}">
                                         <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{$value->contratos_id}}" aria-expanded="false" aria-controls="collapseOne">
                                         {{$value->ctnumero}} - {{$value->ctnome}} 
@@ -116,47 +131,58 @@
                                                     <!-- <h4 class="card-title" style="font-size: 16px;">Selecione o produto</h4> -->
                                                     @foreach($contrato_users as $key => $value2)  
                                                         @if($value2->ctnome == $contratos_name)     
-                                                            @if($value2->prdescricao !== $produtos_name)    
-                                                                <?php $produtos_name = $value2->prdescricao; ?>                                         
-                                                                <div class="card card-plain">
-                                                                    <div class="card-header" role="tab" id="heading-{{$contador}}">
-                                                                    <a data-toggle="collapse" data-parent="#accordion-3" href="#collapse-{{$contador}}" aria-expanded="false" aria-controls="collapse-{{$contador}}">
-                                                                        {{$value2->prdescricao}}
-                                                                        <i class="nc-icon nc-minimal-down"></i>
-                                                                    </a>
-                                                                    </div>
-                                                                    <div id="collapse-{{$contador}}" class="collapse" role="tabpanel" aria-labelledby="heading-{{$contador}}">
-                                                                        <div class="card-body" style="padding: 5px;">
-                                                                            @foreach($contrato_users as $key => $value3)  
-                                                                                @if($value3->ctnome == $value2->ctnome)     
-                                                                                    @if($value3->prdescricao == $value2->prdescricao)
-                                                                                    <div class="flex-container rowatividade">
-                                                                                        <div class="divform" >
-                                                                                            <div class="md-form">
-                                                                                                <input type="hidden" id="aldescricao{{$contador}}" class="inputhoras" name="horas[{{$value3->contratos_id}}, {{$value3->produtos_id}}, {{$value3->atividades_id}}, {{$contador}}]" value="00:00" >
-                                                                                                
-                                                                                                <i class="far fa-clock" style="font-size: 10px; margin-left: -10px"></i>
-                                                                                                <input type="text" value="" id="horas{{$contador}}" data-id="{{$contador}}" data-tipo='hora' max="40" maxlength="2" class="formhoras" placeholder="hh"> : 
-                                                                                                <input type="text" value=""  id="minutos{{$contador}}" data-id="{{$contador}}" data-tipo ='minuto' max="59" step="10"  maxlength="2" class="formhoras" placeholder="mm">
-
-                                                                                                <!-- <input type="time" id="aldescricao{{$contador}}"   
-                                                                                                name="horas[{{$value3->contratos_id}}, {{$value3->produtos_id}}, {{$value3->atividades_id}}, {{$contador}}]" 
-                                                                                                class="form-control timepicker inputhoras" value="00:00" required> -->
+                                                            @if($value2->prdescricao !== $produtos_name)   
+                                                                 
+                                                                <?php 
+                                                                    $produtos_name = $value2->prdescricao; 
+                                                                    $prodon = false;
+                                                                    foreach($contpro as $key2 => $obj){
+                                                                        if($obj->contratos_id == $value2->contratos_id && $obj->produtos_id == $value2->produtos_id){
+                                                                            $prodon = true;  
+                                                                        }
+                                                                    }
+                                                                ?> 
+                                                                @if($prodon)                                        
+                                                                    <div class="card card-plain">
+                                                                        <div class="card-header" role="tab" id="heading-{{$contador}}">
+                                                                        <span style="float: left; margin-right: 20px"> 
+                                                                            <a href="" title="Adicionar ou Remover as Atividades" data-toggle="modal" data-target="#myModal_editatv" onclick="editar_atv('{{ $value->produtos_id }}', '{{$value->contratos_id}}')" class="btn btn-outline-primary btn-sm btn-rounded waves-effect" style="margin: 0">
+                                                                            <i class="fa fa-cog" aria-hidden="true"></i>
+                                                                            </a> 
+                                                                        </span>
+                                                                        
+                                                                        <a data-toggle="collapse" data-parent="#accordion-3" href="#collapse-{{$contador}}" aria-expanded="false" aria-controls="collapse-{{$contador}}">
+                                                                            {{$value2->prdescricao}}
+                                                                            <i class="nc-icon nc-minimal-down"></i>
+                                                                        </a>
+                                                                        </div>
+                                                                        <div id="collapse-{{$contador}}" class="collapse" role="tabpanel" aria-labelledby="heading-{{$contador}}">
+                                                                            <div class="card-body" id="prod{{$value2->produtos_id}}{{$value2->contratos_id}}" style="padding: 5px;">
+                                                                                @foreach($contrato_users as $key => $value3)  
+                                                                                    @if($value3->ctnome == $value2->ctnome)     
+                                                                                        @if($value3->prdescricao == $value2->prdescricao)
+                                                                                        <div class="flex-container rowatividade" id="atv{{$value3->contratos_id}}{{$value3->produtos_id}}{{$value3->atividades_id}}">
+                                                                                            <div class="divform" >
+                                                                                                <div class="md-form">
+                                                                                                    <input type="hidden" id="aldescricao{{$contador}}" class="inputhoras" name="horas[{{$value3->contratos_id}}, {{$value3->produtos_id}}, {{$value3->atividades_id}}, {{$contador}}]" value="00:00" >                                                                                                
+                                                                                                    <i class="far fa-clock" style="font-size: 10px; margin-left: -10px"></i>
+                                                                                                    <input type="text" value="" id="horas{{$contador}}" data-id="{{$contador}}" data-tipo='hora' max="40" maxlength="2" class="formhoras" placeholder="hh"> : 
+                                                                                                    <input type="text" value=""  id="minutos{{$contador}}" data-id="{{$contador}}" data-tipo ='minuto' max="59" step="10"  maxlength="2" class="formhoras" placeholder="mm">
+                                                                                                </div>
+                                                                                            </div>                                                                                      
+                                                                                        
+                                                                                            <div class="labelatv">
+                                                                                                <label for="aldescricao{{$contador}}" class="active">{{$value3->atdescricao}} </label>
                                                                                             </div>
-                                                                                        </div>
-                                                                                       
-                                                                                    
-                                                                                        <div class="labelatv">
-                                                                                            <label for="aldescricao{{$contador}}" class="active">{{$value3->atdescricao}} </label>
-                                                                                        </div>
-                                                                                    </div>                                                                                
-                                                                                        <?php $contador = $contador+1; ?>
+                                                                                        </div>                                                                                
+                                                                                            <?php $contador = $contador+1; ?>
+                                                                                        @endif
                                                                                     @endif
-                                                                                @endif
-                                                                            @endforeach
+                                                                                @endforeach
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
+                                                                @endif
                                                             @endif
                                                         @endif                                                        
                                                     @endforeach  
@@ -213,10 +239,16 @@
     var data_voltar = $('#data_voltar').val();
     var horas_banco = calcular($('#horas_banco').val(), '00:00','+')
     var restante = total_horas;
+    // var allcontratos = <?php echo json_encode($contrato_users) ?>;
+    
+    
 
     $(document).ready(function () { 
        /// $('.form-control').trigger("change");    
        verificarhoras();  
+       criarcontartos();
+    //    buscarinit(allcontratos);
+    console.log('criarcontartos');
     });
     
     $(document).on('keyup', '.formhoras', function() {
@@ -279,6 +311,10 @@
     });
     $(document).on('change', '.inputhoras', function() {
         verificarhoras();
+    });
+
+    $(document).on('keyup', '#buscactnome', function() {
+        filtrarbusca();
     });
     
 

@@ -28,7 +28,7 @@ class Acesso
                     'storage/{filename}',
                     'home','home/get_card',
                     'meuscontratos','meuscontratos/add/{card}','meuscontratos/delete/{id}','meuscontratos/get_produtos/{id}','meuscontratos/cadastro',
-                    'horas','horas/add/{card}','horas/delete/{id}','horas/editar/{id}','horas/cadastro','horas/permissao_selecao',                   
+                    'horas','horas/add/{card}','horas/delete/{id}','horas/editar/{id}','horas/cadastro','horas/permissao_selecao','horas/delete/add_atv-0','horas/delete/remove_atv',             
                 ];
 
         }        

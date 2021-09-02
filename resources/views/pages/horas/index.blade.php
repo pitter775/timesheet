@@ -11,6 +11,15 @@
 </style>
 @section('content')
 <div class="content">
+<div class="modal fade" id="myModal_editatv" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content" id="retorno_editatv"></div>
+    </div>
+</div>
+
+
+
+
     <input type="hidden" value="" id="data_voltar_calend">
 
     <!-- depois que seleciona a data no calendario -->
