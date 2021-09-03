@@ -78,18 +78,60 @@ function converte_em_horas($segundos){
     events: [
 
       <?php
+      function dias_periodo($inicio, $fim){
+        $mes = 0;
+        $dateRange = array(); // dias do periodo selecionado
+        while($inicio <= $fim){  
+            $mes = $inicio->format('m');  
+            $dateRange[] = $inicio->format('Y-m-d');
+  
+            if($inicio->format('N') > 5 ){
+              return 5;
+            }
+            $inicio = $inicio->modify('+1day');           
+             if($fim->format('m') !== $mes ){
+              return 5;
+             }
+            
+        }
+        return $dateRange;
+      }
       foreach($dados_calendario as $key => $value){
         $horas = horas_segundos($value->horas);
         $datetime1 = new DateTime($value->datainicio.' 00:00:00');
         $datetime2 = new DateTime($value->datafim.' 23:00:00');
         $interval = $datetime1->diff($datetime2);
-        $total_dias =  $interval->format('%a') + 1;
-        $total_horas = $total_dias*8;
 
-        if(strlen($total_horas) == 1){
-          $total_horas = '0'.strval($total_horas);
+        $dateRange = dias_periodo($datetime1, $datetime2);
+        $total_horas = '0';
+        foreach ($dateRange as $data){
+          $soma = true;
+          foreach($dados_lista as $fer){
+            if($fer->fn_data == $data){
+              $total_horas =  $total_horas + converte_segundos($fer->horas);
+              $soma = false;
+            }
+          }
+          if($soma){
+            $total_horas =  $total_horas + converte_segundos('08:00:00');
+          }
+          
         }
-        $total_horas = $total_horas.':00';
+        $total_horas = horas_segundos($total_horas);
+
+
+        // $total_dias =  $interval->format('%a') + 1;
+        // $total_horas = $total_dias*8;
+
+
+
+
+
+
+        // if(strlen($total_horas) == 1){
+        //   $total_horas = '0'.strval($total_horas);
+        // }
+        // $total_horas = $total_horas.':00';
         $class = 'datafalse';
         if($total_horas === $horas){
           $class = 'datatrue';
@@ -117,20 +159,34 @@ function converte_em_horas($segundos){
                  },';
           echo $script;
       } 
-        foreach($dados_lista as $key => $value){
+      foreach($dados_lista as $key => $value){
+        if($value->feriados_tipos_id == 9){
+          $class = 'dataHoras';
+          echo "{
+                  title: 'Preencher $value->horas ',
+                   hora: '0',
+            description: '$value->fn_descricao',     
+                  start: '$value->fn_data 11:33:00',
+                    end: '$value->fn_data 11:50:00',
+                        
+            classNames: '$class', 
+                  },";
+
+        }else{
           $class = 'dataferiado';
           echo "{
                   title: 'Feriado',
+                   hora: '0',
             description: 'Feriado de $value->fn_descricao',     
                   start: '$value->fn_data 11:33:00',
                     end: '$value->fn_data 11:50:00',
                         
             classNames: '$class', 
                   },";
-      } 
-      
+        }
 
-          foreach($dados_ferias as $key => $value){
+      } 
+      foreach($dados_ferias as $key => $value){
             if($value->status == 1){
               $class = 'dataferias';
               if($value->contrato == 'PJ'){
@@ -158,9 +214,7 @@ function converte_em_horas($segundos){
                         
             classNames: '$class', 
                   },";
-      } 
-
-
+      }
       foreach($dados_atestados as $key => $value){
         $datafim = '';
         if($value->tipo == 'dias'){
@@ -176,7 +230,7 @@ function converte_em_horas($segundos){
           $class = 'dataferias_pend';     
         }
      
-      echo "{
+        echo "{
               title: 'Atestado Médico',
         description: 'Atestado Médico',     
               start: '$value->datainicio 11:33:00',
@@ -184,7 +238,7 @@ function converte_em_horas($segundos){
                     
         classNames: '$class', 
               },";
-    } 
+      } 
       ?>
       
     ],  
@@ -202,13 +256,18 @@ function converte_em_horas($segundos){
      if(!$chamada){
     ?>
       eventClick: function(info) {
-        console.log('eventClick')
-        if(info.event.title !== 'Feriado' && info.event.title !== 'Periodo de Ausência'){
-          inicio = info.event.start;
-          fim = info.event.end;
-          data = [dataAtualFormatada(inicio), dataAtualFormatada(fim)];
-          add_atividade(data,'1');
+        console.log(info.event.title)
+        var retorno = info.event.title.split(" ");
+        if(info.event.title !== 'Feriado' && info.event.title !== 'Periodo de Ausência' && retorno[0] !== 'Preencher'){
+          if(info.event.hora !== '0'){
+            console.log('sim');
+            inicio = info.event.start;
+            fim = info.event.end;
+            data = [dataAtualFormatada(inicio), dataAtualFormatada(fim)];
+            add_atividade(data,'1');
+          }          
         }
+        console.log('nao');
       },
       eventMouseEnter: function(info){
         console.log(info);

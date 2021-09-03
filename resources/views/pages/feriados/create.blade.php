@@ -1,37 +1,74 @@
-
+<style>
+    .flex-container {display: flex; align-items:center}
+    .divform{ width: 100px;}
+    .formhoras{ width: 37px !important; padding: 0 !important; text-align: center; color: #10a031; font-weight: 500;}
+    .rowatividade .md-form{  padding: 0px; margin: 5px;  } 
+    .rowatividade{ padding: 0 15px; border: solid 1px #c9d7e0; justify-content:center; float: left; border-radius: 5px; margin-bottom: 15px;-webkit-transition: all 0.25s ease-out;transition: all 0.25s ease-out;}
+    .rowatividade:hover{ border: solid 1px #fff;  -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 10px 0 rgba(0, 0, 0, 0.12); box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 10px 0 rgba(0, 0, 0, 0.12);}
+</style>
 
         <div class="row">
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-body"> 
-                        <h5 style="margin: 0; padding:0; font-weight:300"> Cadastrar Feriados </h5>
+                        <h5 style="margin: 0; padding:0; font-weight:300"> Cadastrar Feriados/ Horas </h5>
                         <form name="form_informacoes" id="form_informacoes" class="col-md-12">
-                        
-                            @csrf    
-                            <input type="hidden" id="fn_data_envio" name="fn_data_envio" class="form-control" value="" required> 
-                            <div class="md-form" style="margin-top: 30px;">
-                                <input type="text" id="fn_data" class="form-control datepicker" name="fn_data" value="" required>
-                                <label for="fn_data" class="active">Selecione uma data</label>
-                            </div>                 
-                                                    
-                            <div class="md-form" style="margin-top: 30px;">
-                                <input type="text" id="fn_descricao" name="fn_descricao" class="form-control" value="" required>
-                                <label for="fn_descricao" class="active">Descrição</label>
-                            </div>
-                            <div class="md-form" style="margin-top: 30px;">    
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @csrf    
+                                    <input type="hidden" id="fn_data_envio" name="fn_data_envio" class="form-control" value="" required> 
+                                    <div class="md-form" style="margin-top: 30px;">
+                                        <input type="text" id="fn_data" class="form-control datepicker" name="fn_data" value="" required>
+                                        <label for="fn_data" class="active">Selecione uma data</label>
+                                    </div>                 
+                                                            
+                                    <div class="md-form" style="margin-top: 30px;">
+                                        <input type="text" id="fn_descricao" name="fn_descricao" class="form-control" value="" required>
+                                        <label for="fn_descricao" class="active">Descrição</label>
+                                    </div>
+                                    <div class="md-form" style="margin-top: 30px;">    
 
-                                <select class="mdb-select colorful-select dropdown-primary md-form" name="feriados_tipos_id" id="feriados_tipos_id" required>
-                                    <option value="" disabled selected></option>                                            
-                                        @foreach($tipo_feriado as $key => $value)
-                                            <option value="{{$value->id ?? ''}}">{{$value->ftdescricao ?? ''}}</option>
-                                        @endforeach                                                     
-                                </select>                                                
-                                <label for="feriados_tipos_id" class="active">Tipo de Feriado</label>
+                                        <select class="mdb-select colorful-select dropdown-primary md-form" name="feriados_tipos_id" id="feriados_tipos_id" required>
+                                            <option value="" disabled selected></option>                                            
+                                                @foreach($tipo_feriado as $key => $value)
+                                                    <option value="{{$value->id ?? ''}}">{{$value->ftdescricao ?? ''}}</option>
+                                                @endforeach                                                     
+                                        </select>                                                
+                                        <label for="feriados_tipos_id" class="active">Escolha um tipo</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="divtotalhoras">
+                                <div class="col-md-12">
+                                    <div class="flex-container rowatividade" id="atv242245">
+                                        <div class="divform">
+                                            <div class="md-form">
+                                                <i class="far fa-clock active" style="font-size: 10px; margin-left: -10px"></i>
+                                                <input type="text" name="horas" value="" id="horas0" data-id="0" data-tipo="hora" max="40" maxlength="2" class="formhoras" placeholder="hh"> : 
+                                                <input type="text" name="minutos" value="" id="minutos0" data-id="0" data-tipo="minuto" max="59" step="10" maxlength="2" class="formhoras" placeholder="mm">
+                                            </div>
+                                        </div>                                                                                      
+                                    
+                                        <div class="labelatv">
+                                            <label for="aldescricao0" class="active">Total de Horas Permitida </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="footerint">
+                                        <button type="submit" class="btn btn-outline-success btn-sm btn-rounded waves-effect "><i class="fas fa-save"></i> Adicionar</button>                                                                     
+                                    </div> 
+                                </div>
+
                             </div>
 
-                            <div class="footerint">
-                                <button type="submit" class="btn btn-outline-success btn-sm btn-rounded waves-effect "><i class="fas fa-save"></i> Adicionar</button>                                                                     
-                            </div>                                  
+
+
+                                                             
                         </form>
                     </div>
                     <div style="width: 100%; border-top: solid 1px #eee; margin-bottom: 20px; margin-top:18px "></div>
@@ -39,7 +76,7 @@
                         <div class="card-body">
                             <form name="form_todosferiados" id="form_todosferiados" >
                             @csrf 
-                                <h5 style="margin: 0; padding:0; font-weight:300; font-size: 15px"> Todos os Feriados Nacionais </h5>
+                                <h5 style="margin: 0; padding:0; font-weight:300; font-size: 15px"> Adicionar todos os feriados nacionais </h5>
                                 <div class="md-form" style="margin-top: 30px;">
                                     <input type="text" id="ferano" name="ferano" class="form-control" value="" required>
                                     <label for="ferano" class="active">Qual ano ?</label>
@@ -67,18 +104,27 @@
     $(document).ready(function () {
         $('.mdb-select').materialSelect();     
         $('.form-control').trigger("change");   
+        $('#divtotalhoras').hide();
         // $('.datepicker').pickadate();   
 
-        $(".datepicker").pickadate({
-    isRTL: false,
-    format: 'dd/mm/yyyy',
-    autoclose:true,
-    language: 'pt-br'
-});
+            $(".datepicker").pickadate({
+        isRTL: false,
+        format: 'dd/mm/yyyy',
+        autoclose:true,
+        language: 'pt-br'
+    });
+    $(document).on('change', '#feriados_tipos_id', function() {
+        
+        if($(this).val() == 9){
+            $('#divtotalhoras').show();
+        }else{
+            $('#divtotalhoras').hide();
+        }
+    });
 
-$('#ferano').keyup(function(e) {
-  $('.txt-ano').text($(this).val());
-});
+    $('#ferano').keyup(function(e) {
+    $('.txt-ano').text($(this).val());
+    });
         
     });
     function calendario_atual(event){ 

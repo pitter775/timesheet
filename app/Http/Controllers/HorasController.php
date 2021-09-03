@@ -95,8 +95,7 @@ class HorasController extends Controller
           'atividades_id'=>$request->ativid, 
         ];
         return $retorno;
-    }
-   
+    }   
     public function remove_atv(Request $request){
         $deletar = Contrato_user::where([['contratos_id', $this->cont_pro($request->contproid, 'contrato')],
                                         ['produtos_id', $this->cont_pro($request->contproid, 'produto')],
@@ -111,8 +110,6 @@ class HorasController extends Controller
         ];
         return $retorno;
     }
-
-
     public function editar_atv(Request $request){
         $teste = $request->card;
         $dados_lista = DB::table('contrato_users AS c')
@@ -161,6 +158,7 @@ class HorasController extends Controller
            }
           
       }
+      // ddd($dateRange);
 
       $permissao1 = DB::table('eventos AS u')
       ->join('periodos', 'periodos.id', 'u.periodos_id')     
@@ -176,7 +174,8 @@ class HorasController extends Controller
 
       $dados_feriados = DB::table('feriados AS u')
       ->join('feriados_tipos', 'feriados_tipos.id', 'u.feriados_tipos_id')
-      ->whereIn('u.fn_data', $dateRange)
+      ->where('u.feriados_tipos_id', '!=' , 9)
+      ->whereIn('u.fn_data', $dateRange)      
       ->select('*', 'u.id AS id')
       ->get();
 
@@ -193,6 +192,7 @@ class HorasController extends Controller
       ->get();
 
       return count($permissao1) + count($permissao2) + count($dados_feriados) + count($dados_ferias1) + count($dados_ferias2);
+      // return count($permissao1) + count($permissao2) +  count($dados_ferias1) + count($dados_ferias2);
 
     }
     public function lista_mes_atual($anima_lista,$request){
@@ -366,6 +366,25 @@ class HorasController extends Controller
 
 
     }
+
+    function dias_periodo($inicio, $fim){
+      $mes = 0;
+      $dateRange = array(); // dias do periodo selecionado
+      while($inicio <= $fim){  
+          $mes = $inicio->format('m');  
+          $dateRange[] = $inicio->format('Y-m-d');
+
+          if($inicio->format('N') > 5 ){
+            return 5;
+          }
+          $inicio = $inicio->modify('+1day');           
+           if($fim->format('m') !== $mes ){
+            return 5;
+           }
+          
+      }
+      return $dateRange;
+    }
     public function add_horas($add_anima, $request){
       $data_voltar = $request->data_voltar; 
 
@@ -382,9 +401,36 @@ class HorasController extends Controller
       $datetime2 = new DateTime($request->fim.' 23:00:00');
 
       $interval = $datetime1->diff($datetime2);
+
+      $dateRange = $this->dias_periodo($datetime1, $datetime2);
+      $total_horas = '0';
+      $total_horas2 = '02:00:00';
+      $dados_feriados = DB::table('feriados AS u')
+      ->join('feriados_tipos', 'feriados_tipos.id', 'u.feriados_tipos_id')
+      ->whereIn('u.fn_data', $dateRange)      
+      ->select('*', 'u.id AS id')
+      ->get();
+      foreach ($dateRange as $data){
+        $soma = true;
+        foreach($dados_feriados as $fer){
+          if($fer->fn_data == $data){
+            $total_horas =  $total_horas + $this->converte_segundos($fer->horas);
+            $soma = false;
+          }
+        }
+        if($soma){
+          $total_horas =  $total_horas + $this->converte_segundos('08:00:00');
+        }
+        
+      }
+      $total_horas = $this->horas_segundos_full($total_horas);
+
+      // ddd($this->horas_segundos_full($total_horas));
+
+
       $total_dias =  $interval->format('%a') + 1;
-      $total_horas = $total_dias*8;
-      $total_horas = $total_horas.':00';
+      // $total_horas = $total_dias*8;
+      // $total_horas = $total_horas.':00';
 
       // lista para preencher as horas 
       $contrato_users = DB::table('contrato_users AS u')
@@ -399,7 +445,7 @@ class HorasController extends Controller
       ->where('u.users_id', Auth::user()->id)
       ->get();
 
-      //  ddd($contrato_users);
+      
 
       $contpro = DB::table('contrato_produtos AS c')
       ->select('c.contratos_id AS contratos_id','c.produtos_id AS produtos_id' )
@@ -426,7 +472,12 @@ class HorasController extends Controller
       // $totalcad = $totalcad - $totalats;
 
 
-
+      // $dados_feriados = DB::table('feriados AS u')
+      // ->join('feriados_tipos', 'feriados_tipos.id', 'u.feriados_tipos_id')
+      // // ->where('u.feriados_tipos_id', '!=' , 9)
+      // ->whereIn('u.fn_data', $dateRange)      
+      // ->select('*', 'u.id AS id')
+      // ->get();
 
 
       return view("pages.horas.add_horas", compact('add_anima','contrato_users', 'contpro', 'data_inicio', 'data_fim','total_dias','total_horas', 'totalats',
@@ -614,5 +665,13 @@ class HorasController extends Controller
       if(strlen($minutos) == 1){ $minutos = '0'.$minutos;}
       if(strlen($horas) == 1){ $horas = '0'.$horas;}
       return $horas.':'.$minutos.':00';
-  }
+    }
+      function converte_segundos($tempo){
+        $segundos = 0;
+        list( $h, $m, $s ) = explode( ':', $tempo ); 
+        $segundos += $h * 3600; 
+        $segundos += $m * 60;
+        $segundos += $s;
+        return $segundos;
+    }
 }

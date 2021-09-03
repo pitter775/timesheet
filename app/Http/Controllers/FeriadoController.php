@@ -140,6 +140,9 @@ class FeriadoController extends Controller
             $dados->fn_data = $data_feriado;
             $dados->fn_descricao = $request->input('fn_descricao');
             $dados->feriados_tipos_id = $request->input('feriados_tipos_id');
+            if($request->input('feriados_tipos_id') == 9){
+                $dados->horas = $request->input('horas').':'.$request->input('minutos').':00';
+            }            
             $dados->users_id_atualizou = Auth::user()->id;
             $dados->save();     
             return $dados->id;

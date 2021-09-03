@@ -83,6 +83,7 @@
     
     function form_informacoes() {    
         let form = $('#form_informacoes');
+        console.log(form.serializeArray());
         $.ajax({
             type: "POST",
             url: appUrl+'/'+modulo+'/cadastro',

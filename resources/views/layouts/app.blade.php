@@ -90,6 +90,7 @@
     .datatrue{ background-color: #dcf4dc !important; border:solid 1px #8bc68b !important}
     .datafalse{ background-color: #dcf5f5 !important; border:solid 1px #69a8e7 !important}
     .dataferiado{ background-color: #ffe1e1 !important; border:solid 1px #e76969 !important}
+    .dataHoras{ background-color: #f1e1ff !important; border:solid 1px #ca9ef2 !important}
     .dataferias{ background-color: #f0e2ff !important; border:solid 1px #b28dd8 !important}
     .dataferias_pend{ background-color: #ffffe1 !important; border:solid 1px #d8d78a !important}
     .fc-event-title{ font-weight: normal !important; color: #38465a !important; font-size: 1.1em !important; padding-left: 5px;}
