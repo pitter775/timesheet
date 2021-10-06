@@ -1,5 +1,8 @@
 
 <?php
+
+use PhpParser\Node\Stmt\Else_;
+
 function horas_segundos($total){
   $horas = floor($total / 3600);
   $minutos = floor(($total - ($horas * 3600)) / 60);
@@ -103,21 +106,29 @@ function converte_em_horas($segundos){
         $interval = $datetime1->diff($datetime2);
 
         $dateRange = dias_periodo($datetime1, $datetime2);
+
+
         $total_horas = '0';
-        foreach ($dateRange as $data){
-          $soma = true;
-          foreach($dados_lista as $fer){
-            if($fer->fn_data == $data){
-              $total_horas =  $total_horas + converte_segundos($fer->horas);
-              $soma = false;
+        if (is_array($dateRange) || is_object($dateRange)){   
+          foreach ($dateRange as $data){
+            $soma = true;
+            foreach($dados_lista as $fer){
+              if($fer->fn_data == $data){
+                if($fer->horas){
+                  $total_horas =  $total_horas + converte_segundos($fer->horas);
+                  $soma = false;
+                }
+              
+              }
             }
+            if($soma){
+              $total_horas =  $total_horas + converte_segundos('08:00:00');
+            }
+            break;
           }
-          if($soma){
-            $total_horas =  $total_horas + converte_segundos('08:00:00');
-          }
-          
         }
         $total_horas = horas_segundos($total_horas);
+
 
 
         // $total_dias =  $interval->format('%a') + 1;
@@ -172,6 +183,18 @@ function converte_em_horas($segundos){
             classNames: '$class', 
                   },";
 
+        }elseif($value->feriados_tipos_id == 8){
+          $class = 'dataferiado';
+          echo "{
+                  title: 'Emenda de feriado',
+                   hora: '0',
+            description: '$value->fn_descricao',     
+                  start: '$value->fn_data 11:33:00',
+                    end: '$value->fn_data 11:50:00',
+                        
+            classNames: '$class', 
+                  },";
+         
         }else{
           $class = 'dataferiado';
           echo "{
@@ -270,14 +293,14 @@ function converte_em_horas($segundos){
         console.log('nao');
       },
       eventMouseEnter: function(info){
-        console.log(info);
+      //  console.log(info);
       },
       function( eventMouseEnter ) { 
-        console.log(info);
+      //  console.log(info);
       },
       select: function(info) {
-        console.log('info');
-        console.log(info);
+      //  console.log('info');
+      //  console.log(info);
         dados_select = {inicio:info.startStr, fim:info.endStr};
         $.get(appUrl+'/'+modulo+'/permissao_selecao', dados_select, function(retorno){
           console.log(retorno);

@@ -7419,8 +7419,8 @@ var FullCalendar = (function (exports) {
     }
     function warnUnknownOptions(options, viewName) {
         for (var optionName in options) {
-            console.warn("Unknown option '" + optionName + "'" +
-                (viewName ? " for view '" + viewName + "'" : ''));
+            // console.warn("Unknown option '" + optionName + "'" +
+            //     (viewName ? " for view '" + viewName + "'" : ''));
         }
     }
 

@@ -263,30 +263,63 @@ class HomeController extends Controller
            
 
 
+        //normalmente uso esse aqui para fazer as alterações
 
-        $evento = Evento::all();
-                    foreach($evento as $value){
-                        if($value->users_id == 134){
-                             $periodo = Periodo::find($value->periodos_id);
-                             if($periodo->datainicio < '2020-08-33' &&  $periodo->datainicio > '2020-06-31'){
-                                $novo = Evento::find($value->id);
-                                $novo->tarifa = '153,03';
-                                // $novo->alocacaos_id = 42; //apoio 14 - obras 18 - proj pac 13 - gestao 42
-                                // $novo->departamentos_id = 7; //jica 9 - M02 8 - vio 12 - me01 7
-                                $novo->funcaos_id = 22; // enjenheiro jr 12;  enjeito seniior 11, tecnologo 19 enjeiro pleno 22
-                                // $novo->equipes_id = 3;  
+        // $evento = Evento::all();
+        //             foreach($evento as $value){
+        //                 if($value->users_id == 32){
+        //                      $periodo = Periodo::find($value->periodos_id);
+        //                       if($periodo->datainicio < '2020-07-19' &&  $periodo->datainicio > '2021-07-22'){
+        //                     // if($periodo->datainicio > '2021-05-18'){
+        //                         $novo = Evento::find($value->id);
+        //                         $novo->tarifa = '183,35';
+        //                         $novo->alocacaos_id = 42; //apoio 14 - obras 18 - proj pac 13 - gestao 42
+        //                         $novo->departamentos_id = 7; //jica 9 - M02 8 - vio 12 - me01 7
+        //                         $novo->funcaos_id = 12; // enjenheiro jr 12;  enjeito seniior 11, tecnologo 19 enjeiro pleno 22
+        //                         $novo->equipes_id = 3;  
+        //                         $novo->save();  
+        //                         echo 'ok ->'.$value->id. ' -'; 
+        //                      }
+        //                     // $usuario = User::find($value->users_id);
+        //                     // $novo = Evento::find($value->id);
+        //                     // $novo->departamentos_id = $usuario->departamentos_id;
+        //                     // $novo->save();    
+        //                 }
+                
+        //     }  
+        //     echo '<br>';
+        //     echo 'terminou';   
+
+
+
+
+            // alterar uma atividade de um usuario em um periodo de tempo.
+            $evento = Evento::all();
+            $alt = true;
+            foreach($evento as $value){
+                if($value->users_id == 32){
+                       // $periodo = Periodo::find($value->periodos_id);
+                      //  if($periodo->datainicio < '2020-07-19' &&  $periodo->datainicio > '2021-07-22'){
+                      //  $novo = Evento::find($value->id);         
+                           
+                         if($value->atividades_id == 56){
+                            $novo = Evento::find($value->id); 
+                            echo  $value->atividades_id ;      
+                            if($alt){                                
+                                $novo->atividades_id = 18;                               
                                 $novo->save();  
                                 echo 'ok ->'.$value->id. ' -'; 
-                             }
-                            // $usuario = User::find($value->users_id);
-                            // $novo = Evento::find($value->id);
-                            // $novo->departamentos_id = $usuario->departamentos_id;
-                            // $novo->save();    
-                        }
-                
-            }  
-            echo '<br>';
-            echo 'terminou';   
+                                $alt = false;
+                            }else{
+                                $alt = true;
+                            }
+                         }
+                     //   }
+                }
+        
+    }  
+    echo '<br>';
+    echo 'terminou';   
         
         
                 // return $this->separa_datas('2020-01-01','2020-05-01');

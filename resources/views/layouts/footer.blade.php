@@ -17,7 +17,6 @@
                                 Session::forget('message');
                             ?>
                         document.write(new Date().getFullYear())
-                        console.log('footer');
                     </script>{{ __(', made with ') }}<i class="fa fa-heart heart"></i>{{ __(' by ') }}<a class="@if(Auth::guest()) text-white @endif" href="http://www.jhe.com.br/" target="_blank">JHE</a>
                 </span>
             </div>

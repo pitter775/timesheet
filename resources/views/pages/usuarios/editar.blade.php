@@ -11,7 +11,7 @@
             <input type="hidden" id="id_geral_edit" name="id_geral" class="form-control" value="{{$dados_editar->uid}}" required>
             @csrf                       
             <div class="row">                                            
-                <div class="col-md-7">                                                
+                <div class="col-md-5">                                                
                     <div class="md-form">
                         <input type="text" id="ed_name" name="name" class="form-control" value="{{$dados_editar->name ?? ''}}" required>
                         <label for="ed_name" class="active">Nome</label>
@@ -25,6 +25,15 @@
                             <option @if( $dados_editar->contrato == 'CLT') selected @endif>CLT</option>                                                   
                         </select>                                                
                         <label for="ed_contrato" class="active">Contrato</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="md-form">                                                
+                        <div class="switch switchacord2 pequeno" style="margin-left: 0; padding-left:0; margin-top: 10px">
+                            <label><input type="checkbox" style="width: 20px;" name="horas" value="1" class="checklever" id="ed_horas" />
+                            <span class="lever" style="margin-left: 0; padding-left:0"></span> ilimitado</label> 
+                            <input type="hidden" id="hidhoras" value="{{$dados_editar->horas_ilimitadas ?? ''}}"/>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -124,6 +133,10 @@
     </div>
 </div>
 <script>
+
+    if($('#hidhoras').val() == '1'){
+        $('#ed_horas').prop("checked", true);
+    }
     $(document).ready(function () {
         $('.editselect').materialSelect();     
         $('.form-control').trigger("change");     

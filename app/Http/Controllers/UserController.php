@@ -61,7 +61,8 @@ class UserController extends Controller
     public function store(Request $request){
       $id_geral = $request->input('id_geral');   
       
-      $password = $request->input('password');     
+      $password = $request->input('password');    
+      $horas = $request->input('horas');   
       
       if($id_geral == ''){
           $tem = User::where('email', $request->input('email'))->get();
@@ -87,8 +88,16 @@ class UserController extends Controller
       if(isset($password)){
         if($password !== ''){
           $dados->password = Hash::make($request->input('password')); 
-        }
-        
+        }        
+      }
+      if(isset($horas)){
+        if($horas == 1){
+          $dados->horas_ilimitadas = $horas; 
+        }else{
+          $dados->horas_ilimitadas = 0; 
+        }     
+      }else{
+        $dados->horas_ilimitadas = 0; 
       }
       $dados->perfil = $request->input('perfil');      
       $dados->save();     

@@ -103,7 +103,6 @@ window.setInterval(add_mensagens, 10000);
         });
         $.get('/avisos/aviso_qnt_novo', function(retorno){
             if(retorno > 0){
-                console.log('entyrou');
                 $('.cimaicon').css('display','block');
                 $('.cimaicon').show();
                 $('.cimaicon').html(retorno);

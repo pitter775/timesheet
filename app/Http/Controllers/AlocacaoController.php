@@ -14,6 +14,7 @@ class AlocacaoController extends Controller
         $this->middleware('auth');
     }
     public function index(){
+
       return view("pages.alocacoes.index");
     }
 

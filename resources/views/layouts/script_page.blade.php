@@ -17,10 +17,8 @@
                 setTimeout(function(){ $(obj).removeClass(tipocor);}, 20);
                 setTimeout(function(){ $(obj).removeClass('anima');}, 1000);
             }else{
-                console.log($id);
                 for (let i = 0; i < $id.length; ++i) {
                     let obj = '#tab'+$id[i];
-                    console.log(obj);
                     $(obj).addClass(tipocor);
                     is0 = i+'0';
                     is1 = i+'00';

@@ -21,6 +21,7 @@
 
 
     <input type="hidden" value="" id="data_voltar_calend">
+    <input type="hidden" value="{{Auth::user()->horas_ilimitadas}}" id="horas_ilimitadas">
 
     <!-- depois que seleciona a data no calendario -->
     <div class="row">

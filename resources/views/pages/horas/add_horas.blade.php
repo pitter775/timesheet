@@ -56,6 +56,7 @@
 </style>
 
 <div class="row" style="position: relative;" id="card_add_horas">
+<input type="hidden" value="{{auth()->user()->id}}" name="userfuncao" id="userfuncao" />
 
     
     <div class="col-sm-10">
@@ -248,7 +249,6 @@
        verificarhoras();  
        criarcontartos();
     //    buscarinit(allcontratos);
-    console.log('criarcontartos');
     });
     
     $(document).on('keyup', '.formhoras', function() {

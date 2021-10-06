@@ -15,13 +15,13 @@
                                 <input type="hidden" id="id_geral" name="id_geral" class="form-control" value="" required>
                                 @csrf                       
                                 <div class="row">                                            
-                                    <div class="col-md-8">                                                
+                                    <div class="col-md-7">                                                
                                         <div class="md-form">
                                             <input type="text" id="name" name="name" class="form-control" value="" required>
                                             <label for="name" class="active">Nome</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-2">
                                         <div class="md-form">                                                
                                             <select class="mdb-select colorful-select dropdown-primary md-form" name="contrato" id="contrato" required >  
                                                     <option value="" disabled selected></option>                                            
@@ -29,6 +29,14 @@
                                                     <option>CLT</option>                                                   
                                             </select>                                                
                                             <label for="contrato" class="active">Contrato</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="md-form">                                                
+                                            <div class="switch switchacord2 pequeno" style="margin-left: 0; padding-left:0; margin-top: 10px">
+                                                <label><input type="checkbox" style="width: 20px;" name="horas" value="1" class="checklever">
+                                                <span class="lever" style="margin-left: 0; padding-left:0"></span> ilimitado</label> 
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-3">

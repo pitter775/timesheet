@@ -64,11 +64,9 @@
     });
     $(document).on('change', '.checkprod', function() {
         if($(this).is(":checked")){
-            console.log('ligado')
             $('#status').val(1);
 
         }else{
-            console.log('desligado')
             $('#status').val(0);
 
         }

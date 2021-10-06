@@ -63,7 +63,6 @@
     function form_informacoes_edit() {        
         let form = $('#form_informacoes_edit');
         var idgeral = $('#id_geral_edit').val();
-        console.log(form.serializeArray());
         $.ajax({
             type: "POST",
             url: appUrl+'/'+modulo+'/cadastro',

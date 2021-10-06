@@ -50,7 +50,7 @@
                                         </div>                                                                                      
                                     
                                         <div class="labelatv">
-                                            <label for="aldescricao0" class="active">Total de Horas Permitida </label>
+                                            <label for="aldescricao0" class="active">Horas Permitida </label>
                                         </div>
                                     </div>
                                 </div>

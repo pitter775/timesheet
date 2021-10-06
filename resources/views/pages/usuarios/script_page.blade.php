@@ -57,6 +57,7 @@
     
     function form_informacoes_edit() {        
         let form = $('#form_informacoes_edit');
+        console.log(form.serializeArray());
         var idgeral = $('#id_geral_edit').val();
         $.ajax({
             type: "POST",

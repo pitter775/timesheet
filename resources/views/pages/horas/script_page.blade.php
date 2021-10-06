@@ -13,13 +13,7 @@
             let contratos_id =  $( this ).attr("data-contratos_id"); 
             allcontratos.push ({ctnumero: ctnumero, contratos_id: contratos_id});
         });
-        console.log(allcontratos);
     }
-
-   
-    // function buscarinit(dados){
-    //     allcontratos = dados;
-    // }
     function filtrarbusca(){
         let busca = $('#buscactnome').val();
         let filtered = allcontratos.filter(numero => numero.ctnumero.includes(busca));
@@ -50,8 +44,6 @@
             }            
         }
     }
-
-
     function editar_atv(prid, contid){
         var dados_serealize = [];
             dados_serealize.push(
@@ -63,11 +55,6 @@
             $('#retorno_editatv').html(retorno2);
         });
     }
-
-    
-   
-
-
     function add_cards(card, id, tipo){
         switch (card) {
             case 'lista':
@@ -103,6 +90,9 @@
     function verificarhoras(){
         arrayhoras = [];
         var soma = horas_banco;
+       
+
+        // console.log(idfuncao);
 
         $('.inputhoras').each(function(){
             if($(this).val() == ''){
@@ -115,7 +105,6 @@
                 arrayhoras.push($(this).val());
             }
         })
-        console.log(arrayhoras);
 
 
         for (var x=0; x < arrayhoras.length; x++) {
@@ -139,6 +128,16 @@
             $('.totalhoras').text('Restante');
         }
         atualizachart(porcentag);
+
+        var horasilimit = $('#horas_ilimitadas').val();
+        if(horasilimit == '1'){
+            $("#btaddhotas").prop("disabled",false);  
+            $('.totalhoras').hide(); 
+            $('.saldohoras').hide(); 
+            $('.totalhoras1').hide(); 
+            $('.divchart').hide(); 
+        }
+        
     }
     function hmToMins(str) {
         const [hh, mm] = str.split(':').map(nr => Number(nr) || 0);
@@ -175,7 +174,6 @@
     }    
     function form_horas() {    
         let form = $('#form_horas');
-        console.log(form.serializeArray());
         $.ajax({
             type: "POST",
             url: appUrl+'/'+modulo+'/cadastro',
@@ -241,7 +239,6 @@
             let horas_atual = $('#horas_cadastradas').val();
             let horas_alterada = calcular(tempo, horas_atual,'-'); 
             dados = horas_alterada+'-'+id; 
-            console.log(dados);
 
             
             $.get(appUrl+'/'+modulo+'/delete/'+dados, function(retorno){ 
