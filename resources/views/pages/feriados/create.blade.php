@@ -53,6 +53,22 @@
                                             <label for="aldescricao0" class="active">Horas Permitida </label>
                                         </div>
                                     </div>
+                                    <div class="" style="margin-left: -10px;">
+                                        <div class="switch switchacord2 pequeno">
+                                            <label><input type="checkbox" style="width: 20px;" name="todosuser" value="email" class="checklever checkuser" checked>
+                                            <span class="lever"></span> Todos os usuários</label> 
+                                        </div> 
+                                    </div>
+                                    <div class="md-form selecionaruser">
+                                        <select searchable="Procurar..." class="mdb-select colorful-select dropdown-primary md-form" name="usuario[]" id="usuario" multiple>
+                                            <option value="" disabled selected></option>                                            
+                                            <option value="">Selecione...</option>                                            
+                                            @foreach($usuarios as $key => $value)
+                                                <option value="{{$value->id ?? ''}}">{{$value->name ?? ''}}</option>      
+                                            @endforeach                                                     
+                                        </select> 
+                                        <label for="usuario" class="active"><i class="fas fa-users" style="color: #444; margin-right: 5px"></i>  Usuários</label>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -65,10 +81,6 @@
                                 </div>
 
                             </div>
-
-
-
-                                                             
                         </form>
                     </div>
                     <div style="width: 100%; border-top: solid 1px #eee; margin-bottom: 20px; margin-top:18px "></div>
@@ -105,33 +117,41 @@
         $('.mdb-select').materialSelect();     
         $('.form-control').trigger("change");   
         $('#divtotalhoras').hide();
+        $('.selecionaruser').hide();
         // $('.datepicker').pickadate();   
 
-            $(".datepicker").pickadate({
-        isRTL: false,
-        format: 'dd/mm/yyyy',
-        autoclose:true,
-        language: 'pt-br'
-    });
-    $(document).on('change', '#feriados_tipos_id', function() {
+        $(".datepicker").pickadate({
+            isRTL: false,
+            format: 'dd/mm/yyyy',
+            autoclose:true,
+            language: 'pt-br'
+        });
+        $(document).on('change', '#feriados_tipos_id', function() {
+            
+            if($(this).val() == 9){
+                $('#divtotalhoras').show();
+            }else{
+                $('#divtotalhoras').hide();
+            }
+        });
+        $('#ferano').keyup(function(e) {
+            $('.txt-ano').text($(this).val());
+        });
         
-        if($(this).val() == 9){
-            $('#divtotalhoras').show();
+    });
+
+    $(document).on('change', '.checkuser', function() {
+        if($(this).is(":checked")){
+            $('.selecionaruser').hide();
         }else{
-            $('#divtotalhoras').hide();
+            $('.selecionaruser').show();
         }
     });
 
-    $('#ferano').keyup(function(e) {
-    $('.txt-ano').text($(this).val());
-    });
-        
-    });
     function calendario_atual(event){ 
         data_atual = formatDate(event.activeRange.end);
         $('#data_voltar_calend').val(data_atual);
-    }
-    
+    }    
     $("#form_informacoes").submit(function(e) {           
         e.preventDefault(); 
         form_informacoes();        
@@ -144,7 +164,7 @@
 
     if( document.readyState !== 'loading' ) {
           myInitCode();
-    } else {
+        } else {
         document.addEventListener('DOMContentLoaded', function () {
             myInitCode();
         });

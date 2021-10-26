@@ -237,46 +237,48 @@ class HomeController extends Controller
 
 
 
-        // $evento = Evento::all();
-        //             foreach($evento as $value){
-        //                 if($value->users_id == 126 ){
-        //                      $periodo = Periodo::find($value->periodos_id);
-        //                     //  if($periodo->datainicio > '2021-02-00' &&  $periodo->datainicio < '2021-02-30'){           
-        //                         $novo = Evento::find($value->id);
-        //                         $novo->tarifa = '123,15';
-        //                         // $novo->alocacaos_id = 18; //apoio 14 - obras 18 - proj pac 13 - gestao 42
-        //                         // $novo->departamentos_id = 8; //jica 9 - M02 8 - vio 12 - me01 7
-        //                         $novo->funcaos_id = 19; // enjenheiro jr 12;  enjeito seniior 11 ; tecnologo 19
-        //                         $novo->equipes_id = 3;  
-        //                         $novo->save();  
-        //                         echo 'ok - '; 
-        //                     //  }
-        //                     // $usuario = User::find($value->users_id);
-        //                     // $novo = Evento::find($value->id);
-        //                     // $novo->departamentos_id = $usuario->departamentos_id;
-        //                     // $novo->save();    
-        //                 }
+        $evento = Evento::all();
+                    foreach($evento as $value){
+                        if($value->users_id == 159 ){
+                             $periodo = Periodo::find($value->periodos_id);
+                            //   if($periodo->datainicio > '2021-02-00' &&  $periodo->datainicio < '2021-02-30'){           
+                              if($periodo->datainicio > '2021-08-31'){           
+                                $novo = Evento::find($value->id);
+                                $novo->tarifa = '151,54';
+                                // $novo->alocacaos_id = 18; //apoio 14 - obras 18 - proj pac 13 - gestao 42
+                                // $novo->departamentos_id = 7; //jica 9 - M02 8 - vio 12 - me01 7
+                                // $novo->funcaos_id = 11; // enjenheiro jr 12;  enjeito seniior 11 ; tecnologo 19
+                                $novo->equipes_id = 3;  
+                                $novo->save();  
+                                echo 'ok - '; 
+                              }
+                            // $usuario = User::find($value->users_id);
+                            // $novo = Evento::find($value->id);
+                            // $novo->departamentos_id = $usuario->departamentos_id;
+                            // $novo->save();    
+                        }
                 
-        //     }  
-        //     echo '<br>';
-        //     echo 'terminou';
-           
+            }  
+            echo '<br>';
+            echo 'terminou';
 
+            //  por favor modificar o usuario Ericles Medeiros da Silva - a partir de 01/09/2021 em diante tarifa 0, frente 2
+            //  e o usuario Gustavo Nunes - a partir de 01/09/2021 em diante tarifa R$ 151,54, frente 3
 
         //normalmente uso esse aqui para fazer as alterações
 
         // $evento = Evento::all();
         //             foreach($evento as $value){
-        //                 if($value->users_id == 32){
+        //                 if($value->users_id == 157){
         //                      $periodo = Periodo::find($value->periodos_id);
-        //                       if($periodo->datainicio < '2020-07-19' &&  $periodo->datainicio > '2021-07-22'){
-        //                     // if($periodo->datainicio > '2021-05-18'){
+        //                       //if($periodo->datainicio < '2020-07-31' &&  $periodo->datainicio > '2021-09-01'){
+        //                      if($periodo->datainicio > '2020-11-31'){
         //                         $novo = Evento::find($value->id);
-        //                         $novo->tarifa = '183,35';
-        //                         $novo->alocacaos_id = 42; //apoio 14 - obras 18 - proj pac 13 - gestao 42
-        //                         $novo->departamentos_id = 7; //jica 9 - M02 8 - vio 12 - me01 7
-        //                         $novo->funcaos_id = 12; // enjenheiro jr 12;  enjeito seniior 11, tecnologo 19 enjeiro pleno 22
-        //                         $novo->equipes_id = 3;  
+        //                        // $novo->tarifa = '123,15';
+        //                         // $novo->alocacaos_id = 42; //apoio 14 - obras 18 - proj pac 13 - gestao 42
+        //                         // $novo->departamentos_id = 7; //jica 9 - M02 8 - vio 12 - me01 7
+        //                          $novo->funcaos_id = 20; // enjenheiro jr 12;  enjeito seniior 11, tecnologo 19 enjeiro pleno 22
+        //                         // $novo->equipes_id = 3;  
         //                         $novo->save();  
         //                         echo 'ok ->'.$value->id. ' -'; 
         //                      }
@@ -293,33 +295,33 @@ class HomeController extends Controller
 
 
 
-            // alterar uma atividade de um usuario em um periodo de tempo.
-            $evento = Evento::all();
-            $alt = true;
-            foreach($evento as $value){
-                if($value->users_id == 32){
-                       // $periodo = Periodo::find($value->periodos_id);
-                      //  if($periodo->datainicio < '2020-07-19' &&  $periodo->datainicio > '2021-07-22'){
-                      //  $novo = Evento::find($value->id);         
+    //         // alterar uma atividade de um usuario em um periodo de tempo.
+    //         $evento = Evento::all();
+    //         $alt = true;
+    //         foreach($evento as $value){
+    //             if($value->users_id == 32){
+    //                    // $periodo = Periodo::find($value->periodos_id);
+    //                   //  if($periodo->datainicio < '2020-07-19' &&  $periodo->datainicio > '2021-07-22'){
+    //                   //  $novo = Evento::find($value->id);         
                            
-                         if($value->atividades_id == 56){
-                            $novo = Evento::find($value->id); 
-                            echo  $value->atividades_id ;      
-                            if($alt){                                
-                                $novo->atividades_id = 18;                               
-                                $novo->save();  
-                                echo 'ok ->'.$value->id. ' -'; 
-                                $alt = false;
-                            }else{
-                                $alt = true;
-                            }
-                         }
-                     //   }
-                }
+    //                      if($value->atividades_id == 56){
+    //                         $novo = Evento::find($value->id); 
+    //                         echo  $value->atividades_id ;      
+    //                         if($alt){                                
+    //                             $novo->atividades_id = 18;                               
+    //                             $novo->save();  
+    //                             echo 'ok ->'.$value->id. ' -'; 
+    //                             $alt = false;
+    //                         }else{
+    //                             $alt = true;
+    //                         }
+    //                      }
+    //                  //   }
+    //             }
         
-    }  
-    echo '<br>';
-    echo 'terminou';   
+    // }  
+    // echo '<br>';
+    // echo 'terminou';   
         
         
                 // return $this->separa_datas('2020-01-01','2020-05-01');

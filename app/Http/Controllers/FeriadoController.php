@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use App\Models\Feriado;
 use App\Models\Feriados_tipo;
+use App\Models\User;
+use App\Models\Feriado_users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -97,12 +99,13 @@ class FeriadoController extends Controller
 
     public function add_create($add_anima){
         $tipo_feriado = Feriados_tipo::all();
+        $usuarios = User::all();
         $dados_lista = DB::table('feriados AS u')
         ->join('feriados_tipos', 'feriados_tipos.id', 'u.feriados_tipos_id')
         ->select('*', 'u.id AS id')
         ->get();
 
-        return view("pages.feriados.create", compact('add_anima','tipo_feriado','dados_lista'));
+        return view("pages.feriados.create", compact('add_anima','tipo_feriado','dados_lista','usuarios'));
     }
 
     public function editar($id){
@@ -142,14 +145,40 @@ class FeriadoController extends Controller
             $dados->feriados_tipos_id = $request->input('feriados_tipos_id');
             if($request->input('feriados_tipos_id') == 9){
                 $dados->horas = $request->input('horas').':'.$request->input('minutos').':00';
-            }            
+            }
+            if (!$request->input('todosuser')) {
+                $dados->horas_user = 1;
+            }
             $dados->users_id_atualizou = Auth::user()->id;
-            $dados->save();     
+            $dados->save(); 
+
+            if (!$request->input('todosuser')) {
+                foreach($request->usuario as $key => $value){   
+                    if($value){
+                        $dados_user = new Feriado_users();
+                        $dados_user->feriados_id = $dados->id;
+                        $dados_user->users_id  = $value;
+                        $dados_user->save(); 
+                    }
+                }                
+            }
+
             return $dados->id;
         }
     }
     public function delete($id){
         $deletar = Feriado::find($id);
+
+        //removendo dependencias 
+        if(isset($deletar)){
+            $feriado_user = Feriado_users::where('feriados_id', $id)->get();
+            if(isset($feriado_user)){
+                foreach($feriado_user as $fe){
+                    $del = Feriado_users::find($fe->id);
+                    $del->delete();
+                }
+            }
+        }
         if(isset($deletar)){
             try {
                 $deletar->delete();

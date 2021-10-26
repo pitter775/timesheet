@@ -71,7 +71,7 @@ Route::group(['middleware' => 'acesso'], function () {
 	Route::get('/horas/editar/{id}', 'App\Http\Controllers\HorasController@editar'); 
 	Route::post('/horas/cadastro', 'App\Http\Controllers\HorasController@store');
 	Route::get('/horas/permissao_selecao', 'App\Http\Controllers\HorasController@permissao_selecao');
-
+	Route::get('/horas/horasOk', 'App\Http\Controllers\HorasController@horasOk');
 
 	Route::get('/contrato_produto_atividades', 'App\Http\Controllers\Contrato_produto_atividadeController@index')->name('contrato_produto_atividades');
 	Route::get('/contrato_produto_atividades/add/{card}', 'App\Http\Controllers\Contrato_produto_atividadeController@add_card');
@@ -170,12 +170,6 @@ Route::group(['middleware' => 'acesso'], function () {
 	Route::get('/atestado/delete/{id}', 'App\Http\Controllers\AtestadoController@delete');
 	Route::get('/atestado/editar/{id}', 'App\Http\Controllers\AtestadoController@editar');
 	Route::post('/atestado/cadastro', 'App\Http\Controllers\AtestadoController@store'); 
-
-
-
-	
-
-
 	
 });
 Route::group(['middleware' => 'auth'], function () {

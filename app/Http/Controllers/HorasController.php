@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Contrato_user;
 use App\Models\Evento;
+use App\Models\Feriado_users;
 use App\Models\Funcao;
 use App\Models\Periodo;
 use App\Models\User;
@@ -27,7 +28,72 @@ class HorasController extends Controller
       }
       return view("pages.horas.index");
     }
+    
 
+    public function horasOk(Request $request){
+      $start = new Carbon('first day of last month');
+      $end = new Carbon('last day of last month');      
+      $dias_periodo = $this->dias_periodo_ok($start, $end); 
+      $trofeu = false;
+
+        //dd($dias_periodo);
+      $quant_feriados = $this->dias_sem_feriados($dias_periodo);
+      $total_dias = count($dias_periodo) - $quant_feriados;
+      $total_horas = $total_dias * 8;
+      $total_horas = $total_horas .':00:00';
+      $total_segundos = $this->converte_segundos($total_horas);
+      $segundos_user =  $this->horasuser( $dias_periodo[0], end($dias_periodo));
+      if($total_segundos <= $segundos_user){
+        $trofeu = true;
+        return $trofeu;
+      }
+
+      return $trofeu;
+
+  }
+    public function horasuser($data_inicio, $data_fim){
+      $filtro = '';
+      $and = '';
+      $and_or = 'AND';
+      $user = Auth::user()->id;
+
+
+      if($data_inicio != null){
+        if($filtro != null){ $and = ' AND';}
+        if($filtro == null){ $where = 'WHERE';}else{$where = ''; }
+        $filtro .=" $and $where periodos.datainicio BETWEEN '$data_inicio' AND '$data_fim'";
+      }
+      if($data_fim != null){
+          if($filtro != null){ $and = ' AND';}
+          if($filtro == null){ $where = 'WHERE';}else{$where = ''; }
+          $filtro .=" $and $where periodos.datafim BETWEEN '$data_inicio' AND '$data_fim'";
+      }
+      if($user != null){
+          if($filtro != null){ $and = ' AND';}
+          if($filtro == null){ $where = 'WHERE';}else{$where = ''; }
+          $filtro .=" $and $where users.id = '$user' ";
+      }
+     
+      $lista_usuarios = DB::select( DB::raw(
+        "SELECT users.id , users.name, users.email, sum( time_to_sec (e.horas)) as total
+        FROM eventos As e
+          LEFT JOIN users ON users.id = e.users_id
+          LEFT JOIN periodos ON periodos.id = e.periodos_id
+          $filtro"            
+        ));
+    
+        return $lista_usuarios[0]->total;
+    }
+
+    public function dias_sem_feriados($dias){
+        $dados_feriados = DB::table('feriados AS u')
+        ->join('feriados_tipos', 'feriados_tipos.id', 'u.feriados_tipos_id')
+        ->where('u.feriados_tipos_id', '!=' , 9)
+        ->whereIn('u.fn_data', $dias)      
+        ->select('*', 'u.id AS id')
+        ->count();
+      return $dados_feriados;
+    }
     public function add_card($card,Request $request){
       $cards = explode("-", $card);
       $anima_create = $cards[1] == 1?'data-aos=fade-left data-aos-delay=0':'';  
@@ -145,6 +211,7 @@ class HorasController extends Controller
       $dateEnd 		= new DateTime($dateEnd);
       $dateRange = array();
       $mes = 0;
+      $soma = 0;
       while($dateStart <= $dateEnd){    
           $mes = $dateStart->format('m');    
           $dateRange[] = $dateStart->format('Y-m-d');
@@ -155,11 +222,19 @@ class HorasController extends Controller
           $dateStart = $dateStart->modify('+1day');           
            if($dateEnd->format('m') !== $mes ){
             return 5;
-           }
-          
+           }          
       }
-      // ddd($dateRange);
 
+   
+
+      $mesanterior =  date('m', strtotime('-2 months', strtotime(date('Y-m-d'))));
+      // dd($dateEnd->format('m'));
+
+      if($dateEnd->format('m') <= $mesanterior){
+        $soma = 2;
+      }      
+
+      // dd($mesanterior);
       $permissao1 = DB::table('eventos AS u')
       ->join('periodos', 'periodos.id', 'u.periodos_id')     
       ->where([['u.users_id', Auth::user()->id]])
@@ -190,8 +265,14 @@ class HorasController extends Controller
       ->whereIn('u.datafim', $dateRange)
       ->select('*', 'u.id AS id')
       ->get();
+      if(Auth::user()->perfil == 2){
+        $soma = 1;
+      }
+      if($soma == 1){
+        return 0;
+      }
 
-      return count($permissao1) + count($permissao2) + count($dados_feriados) + count($dados_ferias1) + count($dados_ferias2);
+      return count($permissao1) + count($permissao2) + count($dados_feriados) + count($dados_ferias1) + count($dados_ferias2) + $soma;
       // return count($permissao1) + count($permissao2) +  count($dados_ferias1) + count($dados_ferias2);
 
     }
@@ -366,6 +447,27 @@ class HorasController extends Controller
 
 
     }
+    function dias_periodo_ok($inicio, $fim){
+      $mes = 0;
+      $dateRange = array(); // dias do periodo selecionado
+      while($inicio <= $fim){  
+          $mes = $inicio->format('m');  
+          
+          $adddias = true;
+
+          if($inicio->format('N') > 5 ){
+            $adddias = false;
+          }
+          $inicio = $inicio->modify('+1day');           
+          if($fim->format('m') !== $mes ){
+            $adddias = false;
+          }
+          if($adddias){
+            $dateRange[] = $inicio->format('Y-m-d');
+          }          
+      }
+      return $dateRange;
+    }
 
     function dias_periodo($inicio, $fim){
       $mes = 0;
@@ -412,10 +514,24 @@ class HorasController extends Controller
       ->get();
       foreach ($dateRange as $data){
         $soma = true;
-        foreach($dados_feriados as $fer){
-          if($fer->fn_data == $data){
-            $total_horas =  $total_horas + $this->converte_segundos($fer->horas);
-            $soma = false;
+        foreach($dados_feriados as $fer){                 
+          if($fer->fn_data == $data){           
+            $somaHuser = true; 
+            $soma = true;
+            if($fer->horas_user == 1){
+              $somaHuser = false;
+              $dados_fer_user = Feriado_users::where('users_id',Auth::user()->id)->get();
+              foreach($dados_fer_user as $feruser){  
+                if($feruser->feriados_id == $fer->id){
+                  $total_horas =  $total_horas + $this->converte_segundos($fer->horas);
+                  $soma = false;
+                }
+              }
+            }
+            if($somaHuser){              
+              $total_horas =  $total_horas + $this->converte_segundos($fer->horas);
+              $soma = false;
+            }
           }
         }
         if($soma){
@@ -541,6 +657,7 @@ class HorasController extends Controller
         $chamada = false;
       }
       $nomeuser = User::where('id',$user)->first()->name;
+      $dados_fer_user = Feriado_users::where('users_id',$user)->get();
       
 
       $dados_calendario = DB::table('eventos AS u')
@@ -563,6 +680,8 @@ class HorasController extends Controller
       ->orderBy('atividades.atdescricao', 'asc')
       // ->groupBy('periodos.datainicio')
       ->get();
+
+      
       
 
       $dados_lista = DB::table('feriados AS u')
@@ -584,7 +703,7 @@ class HorasController extends Controller
 
       // return $dados_calendario;
 
-      return view("pages.horas.add_calendario", compact('add_anima','data_voltar','dados_calendario','dados_lista','dados_calendario_atividade', 'dados_ferias','dados_atestados','chamada','nomeuser'));
+      return view("pages.horas.add_calendario", compact('add_anima','data_voltar','dados_calendario','dados_lista','dados_calendario_atividade', 'dados_ferias','dados_atestados','chamada','nomeuser','dados_fer_user'));
     }
     public function editar($id){
         $dados_editar = Funcao::find($id);
@@ -666,7 +785,7 @@ class HorasController extends Controller
       if(strlen($horas) == 1){ $horas = '0'.$horas;}
       return $horas.':'.$minutos.':00';
     }
-      function converte_segundos($tempo){
+    function converte_segundos($tempo){
         $segundos = 0;
         list( $h, $m, $s ) = explode( ':', $tempo ); 
         $segundos += $h * 3600; 

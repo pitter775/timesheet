@@ -1,5 +1,6 @@
 
 <?php
+use Illuminate\Support\Facades\Auth;
 
 use PhpParser\Node\Stmt\Else_;
 
@@ -171,8 +172,29 @@ function converte_em_horas($segundos){
           echo $script;
       } 
       foreach($dados_lista as $key => $value){
+
+
         if($value->feriados_tipos_id == 9){
           $class = 'dataHoras';
+          if($value->horas_user == 1){
+            foreach($dados_fer_user as $key => $user){
+              if($value->id == $user->feriados_id ){
+                if($user->users_id == Auth::user()->id){
+                  echo "{
+                    title: 'Preencher $value->horas ',
+                     hora: '0',
+              description: '$value->fn_descricao',     
+                    start: '$value->fn_data 11:33:00',
+                      end: '$value->fn_data 11:50:00',
+                          
+              classNames: '$class', 
+                    },";
+                }
+              }
+
+            }
+            
+          }else{
           echo "{
                   title: 'Preencher $value->horas ',
                    hora: '0',
@@ -182,8 +204,11 @@ function converte_em_horas($segundos){
                         
             classNames: '$class', 
                   },";
+          }
 
-        }elseif($value->feriados_tipos_id == 8){
+        }
+        
+        elseif($value->feriados_tipos_id == 8){
           $class = 'dataferiado';
           echo "{
                   title: 'Emenda de feriado',
@@ -279,7 +304,8 @@ function converte_em_horas($segundos){
      if(!$chamada){
     ?>
       eventClick: function(info) {
-        console.log(info.event.title)
+        console.log('eventClick');
+
         var retorno = info.event.title.split(" ");
         if(info.event.title !== 'Feriado' && info.event.title !== 'Periodo de Ausência' && retorno[0] !== 'Preencher'){
           if(info.event.hora !== '0'){
@@ -287,7 +313,16 @@ function converte_em_horas($segundos){
             inicio = info.event.start;
             fim = info.event.end;
             data = [dataAtualFormatada(inicio), dataAtualFormatada(fim)];
-            add_atividade(data,'1');
+            dados_select = {inicio:dataAtualFormatada(inicio), fim:dataAtualFormatada(fim)};
+            console.log(dados_select);
+            $.get(appUrl+'/'+modulo+'/permissao_selecao', dados_select, function(retorno){
+              if(retorno == 0){
+                add_atividade(data,'1');
+              }else{
+                demo.showNotification('top','center', 'danger', 'Seleção não permitida!');
+              }
+            });
+            
           }          
         }
         console.log('nao');
