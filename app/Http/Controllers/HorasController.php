@@ -204,6 +204,10 @@ class HorasController extends Controller
         return view("pages.horas.edit_prod_lista", compact('dados_lista', 'cont_prod_atv'));
     }
     public function permissao_selecao(Request $request){
+      if(Auth::user()->perfil == 2){
+        return 0;
+      }
+
       $data_fim = date('Y-m-d', strtotime("-1 day", strtotime($request->fim)));
       $dateStart 	= $request->inicio;
       $dateStart 	= new DateTime($dateStart);      
@@ -226,28 +230,31 @@ class HorasController extends Controller
       }
 
    
-
+      //proibir mês retrazado em diante
       $mesanterior =  date('m', strtotime('-2 months', strtotime(date('Y-m-d'))));
-      // dd($dateEnd->format('m'));
-
       if($dateEnd->format('m') <= $mesanterior){
-        $soma = 2;
-      }      
+       $soma = 1;
+      }     
+ 
 
-      // dd($mesanterior);
-      $permissao1 = DB::table('eventos AS u')
-      ->join('periodos', 'periodos.id', 'u.periodos_id')     
-      ->where([['u.users_id', Auth::user()->id]])
-      ->whereIn('periodos.datainicio', $dateRange)
-      ->get();
+      if($request->evento === 'selecao'){        
+        $permissao1 = DB::table('eventos AS u')
+        ->join('periodos', 'periodos.id', 'u.periodos_id')     
+        ->where([['u.users_id', Auth::user()->id]])
+        ->whereIn('periodos.datainicio', $dateRange)
+        ->get();
+      
 
-      $permissao2 = DB::table('eventos AS u')
-      ->join('periodos', 'periodos.id', 'u.periodos_id')     
-      ->where([['u.users_id', Auth::user()->id]])
-      ->whereIn('periodos.datafim', $dateRange)
-      ->get();
+        $permissao2 = DB::table('eventos AS u')
+        ->join('periodos', 'periodos.id', 'u.periodos_id')     
+        ->where([['u.users_id', Auth::user()->id]])
+        ->whereIn('periodos.datafim', $dateRange)
+        ->get();    
 
-      $dados_feriados = DB::table('feriados AS u')
+        $soma = count($permissao1) + count($permissao2);        
+      }
+
+      $dados_feriados = DB::table('feriados AS u') // se feriado for diferente de 9 (adição de horas)
       ->join('feriados_tipos', 'feriados_tipos.id', 'u.feriados_tipos_id')
       ->where('u.feriados_tipos_id', '!=' , 9)
       ->whereIn('u.fn_data', $dateRange)      
@@ -265,15 +272,8 @@ class HorasController extends Controller
       ->whereIn('u.datafim', $dateRange)
       ->select('*', 'u.id AS id')
       ->get();
-      if(Auth::user()->perfil == 2){
-        $soma = 1;
-      }
-      if($soma == 1){
-        return 0;
-      }
 
-      return count($permissao1) + count($permissao2) + count($dados_feriados) + count($dados_ferias1) + count($dados_ferias2) + $soma;
-      // return count($permissao1) + count($permissao2) +  count($dados_ferias1) + count($dados_ferias2);
+      return count($dados_feriados) +  count($dados_ferias1) + count($dados_ferias2) + $soma;
 
     }
     public function lista_mes_atual($anima_lista,$request){

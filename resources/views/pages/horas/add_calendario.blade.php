@@ -101,7 +101,9 @@ function converte_em_horas($segundos){
         return $dateRange;
       }
       foreach($dados_calendario as $key => $value){
+        //dd($value->datainicio);
         $horas = horas_segundos($value->horas);
+        //dd($horas);
         $datetime1 = new DateTime($value->datainicio.' 00:00:00');
         $datetime2 = new DateTime($value->datafim.' 23:00:00');
         $interval = $datetime1->diff($datetime2);
@@ -128,22 +130,9 @@ function converte_em_horas($segundos){
             break;
           }
         }
+        
         $total_horas = horas_segundos($total_horas);
 
-
-
-        // $total_dias =  $interval->format('%a') + 1;
-        // $total_horas = $total_dias*8;
-
-
-
-
-
-
-        // if(strlen($total_horas) == 1){
-        //   $total_horas = '0'.strval($total_horas);
-        // }
-        // $total_horas = $total_horas.':00';
         $class = 'datafalse';
         if($total_horas === $horas){
           $class = 'datatrue';
@@ -313,7 +302,7 @@ function converte_em_horas($segundos){
             inicio = info.event.start;
             fim = info.event.end;
             data = [dataAtualFormatada(inicio), dataAtualFormatada(fim)];
-            dados_select = {inicio:dataAtualFormatada(inicio), fim:dataAtualFormatada(fim)};
+            dados_select = {inicio:dataAtualFormatada(inicio), fim:dataAtualFormatada(fim), evento:'eventClick'};
             console.log(dados_select);
             $.get(appUrl+'/'+modulo+'/permissao_selecao', dados_select, function(retorno){
               if(retorno == 0){
@@ -336,7 +325,7 @@ function converte_em_horas($segundos){
       select: function(info) {
       //  console.log('info');
       //  console.log(info);
-        dados_select = {inicio:info.startStr, fim:info.endStr};
+        dados_select = {inicio:info.startStr, fim:info.endStr, evento:'selecao'};
         $.get(appUrl+'/'+modulo+'/permissao_selecao', dados_select, function(retorno){
           console.log(retorno);
           if(retorno == 0){
