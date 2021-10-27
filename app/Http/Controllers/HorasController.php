@@ -238,7 +238,7 @@ class HorasController extends Controller
       }     
  
 
-      if($request->evento === 'selecao'){        
+      if($request->evento === 'selecao' || $request->evento === 'clickdia' ){        
         $permissao1 = DB::table('eventos AS u')
         ->join('periodos', 'periodos.id', 'u.periodos_id')     
         ->where([['u.users_id', Auth::user()->id]])

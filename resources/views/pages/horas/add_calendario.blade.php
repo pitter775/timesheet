@@ -357,10 +357,10 @@ function converte_em_horas($segundos){
       select: function(info) {
         console.log('eventClick');
       //  console.log('info');
-      //  console.log(info);
+        console.log(info.endStr);
         dados_select = {inicio:info.startStr, fim:info.endStr, evento:'selecao'};
         $.get(appUrl+'/'+modulo+'/permissao_selecao', dados_select, function(retorno){
-          console.log(retorno);
+          //console.log(retorno);
           if(retorno == 0){
              data = [info.startStr, info.endStr];
             add_atividade(data);
@@ -371,34 +371,32 @@ function converte_em_horas($segundos){
       },
       navLinkDayClick: function(date, jsEvent) {
         console.log('navLinkDayClick');
-        // console.log(jsEvent.toElement.attributes);
+        
 
         var data_inicio = new Date(date.toISOString());
         let data_inicio_ok = ((data_inicio.getFullYear() )) + "-" + ((data_inicio.getMonth() + 1)) + "-" + data_inicio.getDate();
+        let data_fim_ok = ((data_inicio.getFullYear() )) + "-" + ((data_inicio.getMonth() + 1)) + "-" + ((data_inicio.getDate()+1));
+
+        console.log(data_fim_ok);
         dados = {inicio: data_inicio_ok, fim:data_inicio_ok, data_voltar:formatDate(data_inicio_ok)}; 
+        dados_select = {inicio:data_inicio_ok, fim:data_fim_ok, evento:'clickdia'};
+        $.get(appUrl+'/'+modulo+'/permissao_selecao', dados_select, function(retorno){
+          if(retorno == 0){            
+            $( ".card-calendar" ).hide();
+            $( ".card_lista_cale" ).hide();
+            setTimeout(function(){ 
+              $.get(appUrl+'/'+modulo+'/add/add_horas-1', dados, function(retorno){
+                $('#card_horas').html(retorno);
+                  $.get(appUrl+'/'+modulo+'/add/lista_horas-1', dados, function(retorno){
+                    $('#card_horas_lista').html(retorno);
+                  });
+              });
+            }, 200); 
 
-        //falta fazer a verificação no dia para bloquear a ação
-        // dados_select = [data_inicio_ok, data_inicio_ok];
-        // $.get(appUrl+'/'+modulo+'/permissao_selecao', dados_select, function(retorno){
-        //   console.log(retorno);
-        //   if(retorno == 0){
-        //       data = [data_inicio_ok, data_inicio_ok];
-        //       console.log('ok')
-        //   }else{
-        //     demo.showNotification('top','center', 'danger', 'Seleção não permitida!');
-        //   }
-        // });
-
-          $( ".card-calendar" ).hide();
-          $( ".card_lista_cale" ).hide();
-          setTimeout(function(){ 
-            $.get(appUrl+'/'+modulo+'/add/add_horas-1', dados, function(retorno){
-              $('#card_horas').html(retorno);
-                $.get(appUrl+'/'+modulo+'/add/lista_horas-1', dados, function(retorno){
-                  $('#card_horas_lista').html(retorno);
-                });
-            });
-          }, 200); 
+          }else{
+            demo.showNotification('top','center', 'danger', 'Seleção não permitida!');
+          }
+        });
       }
       <?php } ?>
 
@@ -423,6 +421,7 @@ function add_atividade(datas, evento = '0'){
   $( ".card-calendar" ).hide();
   $( ".card_lista_cale" ).hide();
   $.get(appUrl+'/'+modulo+'/add/add_horas-1', dados, function(retorno){
+    console.log('atividade add');
     $('#card_horas').html(retorno);
     $.get(appUrl+'/'+modulo+'/add/lista_horas-1', dados, function(retorno){
         $('#card_horas_lista').html(retorno);
