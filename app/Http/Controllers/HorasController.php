@@ -204,9 +204,7 @@ class HorasController extends Controller
         return view("pages.horas.edit_prod_lista", compact('dados_lista', 'cont_prod_atv'));
     }
     public function permissao_selecao(Request $request){
-      if(Auth::user()->perfil == 2){
-        return 0;
-      }
+      
 
       $data_fim = date('Y-m-d', strtotime("-1 day", strtotime($request->fim)));
       $dateStart 	= $request->inicio;
@@ -234,6 +232,9 @@ class HorasController extends Controller
       $mesanterior =  date('m', strtotime('-2 months', strtotime(date('Y-m-d'))));
       if($dateEnd->format('m') <= $mesanterior){
        $soma = 1;
+        if(Auth::user()->perfil == 2){
+          $soma = 0;
+        }
       }     
  
 
@@ -242,8 +243,7 @@ class HorasController extends Controller
         ->join('periodos', 'periodos.id', 'u.periodos_id')     
         ->where([['u.users_id', Auth::user()->id]])
         ->whereIn('periodos.datainicio', $dateRange)
-        ->get();
-      
+        ->get();      
 
         $permissao2 = DB::table('eventos AS u')
         ->join('periodos', 'periodos.id', 'u.periodos_id')     
@@ -272,6 +272,8 @@ class HorasController extends Controller
       ->whereIn('u.datafim', $dateRange)
       ->select('*', 'u.id AS id')
       ->get();
+
+    
 
       return count($dados_feriados) +  count($dados_ferias1) + count($dados_ferias2) + $soma;
 
@@ -512,38 +514,42 @@ class HorasController extends Controller
       ->whereIn('u.fn_data', $dateRange)      
       ->select('*', 'u.id AS id')
       ->get();
+      $contt = 0;
       foreach ($dateRange as $data){
-        $soma = true;
-        foreach($dados_feriados as $fer){                 
-          if($fer->fn_data == $data){           
+        $soma = true;    
+        $contt =  $contt +1;  
+
+        foreach($dados_feriados as $fer){          
+
+          if($fer->fn_data == $data){ 
             $somaHuser = true; 
-            $soma = true;
             if($fer->horas_user == 1){
               $somaHuser = false;
-              $dados_fer_user = Feriado_users::where('users_id',Auth::user()->id)->get();
-              foreach($dados_fer_user as $feruser){  
-                if($feruser->feriados_id == $fer->id){
+              $dados_fer_user = Feriado_users::where('users_id',Auth::user()->id)->get();            
+              foreach($dados_fer_user as $feruser){            
+                if($feruser->feriados_id == $fer->id){                   
+                  //verificar se o feriado id faz parte da data               
                   $total_horas =  $total_horas + $this->converte_segundos($fer->horas);
                   $soma = false;
+                  $somaHuser = false;
+                               
                 }
               }
             }
+
             if($somaHuser){              
               $total_horas =  $total_horas + $this->converte_segundos($fer->horas);
               $soma = false;
             }
-          }
+          }         
         }
+
+
         if($soma){
           $total_horas =  $total_horas + $this->converte_segundos('08:00:00');
-        }
-        
-      }
+        }        
+      }    
       $total_horas = $this->horas_segundos_full($total_horas);
-
-      // ddd($this->horas_segundos_full($total_horas));
-
-
       $total_dias =  $interval->format('%a') + 1;
       // $total_horas = $total_dias*8;
       // $total_horas = $total_horas.':00';

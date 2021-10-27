@@ -1,5 +1,7 @@
 
 <?php
+
+use App\Models\Feriado_users;
 use Illuminate\Support\Facades\Auth;
 
 use PhpParser\Node\Stmt\Else_;
@@ -101,44 +103,74 @@ function converte_em_horas($segundos){
         return $dateRange;
       }
       foreach($dados_calendario as $key => $value){
+
         //dd($value->datainicio);
         $horas = horas_segundos($value->horas);
-        //dd($horas);
+       
         $datetime1 = new DateTime($value->datainicio.' 00:00:00');
         $datetime2 = new DateTime($value->datafim.' 23:00:00');
         $interval = $datetime1->diff($datetime2);
 
         $dateRange = dias_periodo($datetime1, $datetime2);
 
-
+        $contr = 0;
         $total_horas = '0';
-        if (is_array($dateRange) || is_object($dateRange)){   
+        if (is_array($dateRange) || is_object($dateRange)){            
           foreach ($dateRange as $data){
+         
             $soma = true;
             foreach($dados_lista as $fer){
-              if($fer->fn_data == $data){
-                if($fer->horas){
-                  $total_horas =  $total_horas + converte_segundos($fer->horas);
-                  $soma = false;
-                }
-              
+     
+              if($fer->fn_data == $data){     
+                      
+                if($fer->horas){                   
+                  
+                    if($fer->horas_user != 0){
+                      $feriado_user = Feriado_users::where([['users_id', Auth::user()->id],['feriados_id', $fer->id]])->first();
+                    
+                      if(isset($feriado_user)){        
+                        $contr = $contr +1;  
+                        $total_horas =  $total_horas + converte_segundos($fer->horas);
+                        $soma = false;                        
+                      } 
+
+                    }else{
+                      $contr = $contr +1;  
+                      $total_horas =  $total_horas + converte_segundos($fer->horas);
+                      $soma = false;
+                    }              
+                
+                }              
               }
             }
+           
+           
             if($soma){
               $total_horas =  $total_horas + converte_segundos('08:00:00');
             }
-            break;
+
           }
         }
-        
+
+
         $total_horas = horas_segundos($total_horas);
+        // if($value->datainicio == '2021-10-14'){
+        //   //dd($horas); // 25:30
+        //   //dd($total_horas); // 200:00
+        //   //dd($datass);
+        // }
 
         $class = 'datafalse';
+        $addhoras = '';
         if($total_horas === $horas){
-          $class = 'datatrue';
+          $class = 'datatrue';  
+          $addhoras =  $horas;  
+
+        }else{
+          $addhoras =  $horas. ' de '.$total_horas; 
         }
         $script ='{
-                  title: "'.$horas.' hs"'.',
+                  title: "'.$addhoras.' hs"'.',
             description: "';
 
            foreach($dados_calendario_atividade as $key2 => $value2){
@@ -323,6 +355,7 @@ function converte_em_horas($segundos){
       //  console.log(info);
       },
       select: function(info) {
+        console.log('eventClick');
       //  console.log('info');
       //  console.log(info);
         dados_select = {inicio:info.startStr, fim:info.endStr, evento:'selecao'};
