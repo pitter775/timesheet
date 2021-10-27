@@ -236,9 +236,37 @@ class HorasController extends Controller
           $soma = 0;
         }
       }     
- 
 
-      if($request->evento === 'selecao' || $request->evento === 'clickdia' ){        
+
+
+      $diasUsados = [];
+      $segunda = date('Y-m-d', strtotime('monday this week', strtotime($dateRange[0])));
+
+      if($request->evento === 'selecao' || $request->evento === 'clickdia' ){  
+        for ($i = 0; $i <= 5; $i++) {
+          $segundamais = date('Y-m-d', strtotime('+'.$i.' days', strtotime($segunda)));
+          $varrendo = DB::table('eventos AS u')
+          ->join('periodos', 'periodos.id', 'u.periodos_id')     
+          ->where([['u.users_id', Auth::user()->id], ['periodos.datainicio', $segundamais]])
+          ->get();   
+
+          if(count($varrendo) > 0 ){
+            $dateStart 	= new DateTime($varrendo[0]->datainicio);
+            $dateEnd 		= new DateTime($varrendo[0]->datafim);   
+            $dias_periodo = $this->dias_periodo_ok($dateStart, $dateEnd); 
+            $diasUsados = array_merge($diasUsados, $dias_periodo);  
+          }      
+        }  
+
+        foreach($diasUsados as $day){
+          foreach($dateRange as $rage){
+            $dayMenos = date('Y-m-d', strtotime('-1 days', strtotime($day)));
+            if($dayMenos == $rage){
+              $soma = $soma +1;
+            }
+          }
+        }
+
         $permissao1 = DB::table('eventos AS u')
         ->join('periodos', 'periodos.id', 'u.periodos_id')     
         ->where([['u.users_id', Auth::user()->id]])
@@ -251,7 +279,7 @@ class HorasController extends Controller
         ->whereIn('periodos.datafim', $dateRange)
         ->get();    
 
-        $soma = count($permissao1) + count($permissao2);        
+        $soma = $soma + count($permissao1) + count($permissao2);        
       }
 
       $dados_feriados = DB::table('feriados AS u') // se feriado for diferente de 9 (adição de horas)
@@ -271,9 +299,7 @@ class HorasController extends Controller
       ->where([['u.users_id', Auth::user()->id]])
       ->whereIn('u.datafim', $dateRange)
       ->select('*', 'u.id AS id')
-      ->get();
-
-    
+      ->get();    
 
       return count($dados_feriados) +  count($dados_ferias1) + count($dados_ferias2) + $soma;
 
