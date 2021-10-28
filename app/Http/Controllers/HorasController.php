@@ -203,8 +203,7 @@ class HorasController extends Controller
 
         return view("pages.horas.edit_prod_lista", compact('dados_lista', 'cont_prod_atv'));
     }
-    public function permissao_selecao(Request $request){
-      
+    public function permissao_selecao(Request $request){     
 
       $data_fim = date('Y-m-d', strtotime("-1 day", strtotime($request->fim)));
       $dateStart 	= $request->inicio;
@@ -227,7 +226,6 @@ class HorasController extends Controller
            }          
       }
 
-   
       //proibir mês retrazado em diante
       $mesanterior =  date('m', strtotime('-2 months', strtotime(date('Y-m-d'))));
       if($dateEnd->format('m') <= $mesanterior){
@@ -237,12 +235,14 @@ class HorasController extends Controller
         }
       }     
 
+      //dd($dateRange);
 
 
-      $diasUsados = [];
-      $segunda = date('Y-m-d', strtotime('monday this week', strtotime($dateRange[0])));
+      
 
       if($request->evento === 'selecao' || $request->evento === 'clickdia' ){  
+        $diasUsados = [];
+        $segunda = date('Y-m-d', strtotime('monday this week', strtotime($dateRange[0])));
         for ($i = 0; $i <= 5; $i++) {
           $segundamais = date('Y-m-d', strtotime('+'.$i.' days', strtotime($segunda)));
           $varrendo = DB::table('eventos AS u')
