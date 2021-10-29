@@ -235,11 +235,6 @@ class HorasController extends Controller
         }
       }     
 
-      //dd($dateRange);
-
-
-      
-
       if($request->evento === 'selecao' || $request->evento === 'clickdia' ){  
         $diasUsados = [];
         $segunda = date('Y-m-d', strtotime('monday this week', strtotime($dateRange[0])));
