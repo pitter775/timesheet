@@ -98,7 +98,7 @@
                                 <div class="col-md-4">                                                
                                     <div class="md-form">
                                         <input type="text" id="buscactnome" name="ctnome" class="form-control" value="" required="">
-                                        <label for="ctnome" class=""> <i class="fas fa-search"></i> Nº</label>
+                                        <label for="ctnome" class=""> <i class="fas fa-search"></i> Contratos</label>
                                     </div>
                                 </div>
                             </div>
@@ -119,7 +119,7 @@
                             ?>
                                 @if($value->ctnome !== $contratos_name)
                                     <?php $contratos_name = $value->ctnome; ?>
-                                    <div class="card card-plain cardcontratosid" data-ctnumero ="{{$value->ctnumero}}" data-contratos_id ="{{$value->contratos_id}}" data-nome="{{$value->ctnome}}">
+                                    <div class="card card-plain cardcontratosid" data-ctnumero ="{{$value->ctnumero}}" data-ctnome= "{{$value->ctnome}}" data-contratos_id ="{{$value->contratos_id}}" data-nome="{{$value->ctnome}}">
                                         <div class="card-header" role="tab" id="heading{{$value->contratos_id}}">
                                         <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{$value->contratos_id}}" aria-expanded="false" aria-controls="collapseOne">
                                         {{$value->ctnumero}} - {{$value->ctnome}} 

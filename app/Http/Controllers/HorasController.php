@@ -227,9 +227,9 @@ class HorasController extends Controller
       }
 
       //proibir mês retrazado em diante
-      $mesanterior =  date('m', strtotime('-2 months', strtotime(date('Y-m-d'))));
+      $mesanterior =  date('m', strtotime('-4 months', strtotime(date('Y-m-d'))));
       if($dateEnd->format('m') <= $mesanterior){
-       $soma = 1;
+        $soma = 0;
         if(Auth::user()->perfil == 2){
           $soma = 0;
         }

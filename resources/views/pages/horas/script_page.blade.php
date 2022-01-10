@@ -3,34 +3,37 @@
     var appUrl ="{{env('APP_URL')}}"; 
     var modulo = 'horas'; 
     var allcontratos = []; 
-    var allcontratostemp = []; 
-    var arrayteste = []; 
 
     function criarcontartos(){
         // arrayteste.push({name: "mensagem", value: ed_editorData});
         $( ".cardcontratosid" ).each(function() { 
             let ctnumero =  $( this ).attr("data-ctnumero"); 
+            let ctnome =  $( this ).attr("data-ctnome"); 
             let contratos_id =  $( this ).attr("data-contratos_id"); 
-            allcontratos.push ({ctnumero: ctnumero, contratos_id: contratos_id});
+            allcontratos.push ({ctnumero: ctnumero, contratos_id: contratos_id, ctnome:ctnome});
         });
     }
     function filtrarbusca(){
-        let busca = $('#buscactnome').val();
-        let filtered = allcontratos.filter(numero => numero.ctnumero.includes(busca));
-        allcontratostemp = []; 
-
-        // console.log('filtered');
-        // console.log(filtered);
-
-
-        $( ".cardcontratosid" ).each(function() {            
-            let id =  $( this ).attr("data-contratos_id");   
-            const result = filtered.find( numero => numero.contratos_id === id );
-            allcontratostemp.push(result);
-        });
-        $( ".cardcontratosid" ).css("display", "none");
-        limpardados(allcontratostemp);
-        
+         $( ".cardcontratosid" ).css("display", "none");
+        const searchString = $('#buscactnome').val();
+        const escapeRegExp = (str) => // or better use 'escape-string-regexp' package
+        str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
+        const filterBy = (term) => {
+            const re = new RegExp(escapeRegExp(term), 'i')
+            return person => {
+                for (let prop in person) {
+                if (!person.hasOwnProperty(prop)) {
+                    continue;
+                }
+                if (re.test(person[prop])) {
+                    return true;
+                }
+                }
+                return false;        
+            }
+        }
+        const found = allcontratos.filter(filterBy(searchString))
+        limpardados(found);
     }
     function limpardados(dados){
         for(const member of dados){
