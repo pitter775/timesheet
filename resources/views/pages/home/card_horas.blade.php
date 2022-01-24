@@ -54,6 +54,7 @@ $porcentagem = round($porcentagem);
         </div>
         @if(Auth::user()->perfil == 2) 
             <button type="button" style="float: right; cursor: pointer;" data-toggle="modal" data-target="#myModalRelatorio" onclick="mostrar_relatorio()" class="btn btn-outline-primary btn-sm btn-rounded waves-effect btrelatorio">Relatório de usuários</button>
+            <button type="button" style="float: right; cursor: pointer;" data-toggle="modal" data-target="#myModalRelatorio_completo" onclick="mostrar_relatorio_completo()" class="btn btn-outline-primary btn-sm btn-rounded waves-effect btrelatorio">Relatório completo</button>
         @endif
     </div>
     <div class="col-5" style="text-align: right; margin-top: 5px">

@@ -112,8 +112,6 @@
 </div>
 
 
-
-
 <script>
 
     var chartatividade_hs  = echarts.init(document.querySelector('#grafico_atividade_hs'), null);	

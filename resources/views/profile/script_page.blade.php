@@ -140,7 +140,7 @@
         let form = $('#form_atestado');
         console.log(form.serializeArray());
         var data = new FormData($("form[name='form_atestado']")[0]);
-
+        console.log(data);
    
         $.ajax({
             type: "POST",

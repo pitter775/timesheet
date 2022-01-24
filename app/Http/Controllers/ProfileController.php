@@ -73,7 +73,7 @@ class ProfileController extends Controller
             if(!count($tem) == 0){return 'erro, Já existe esse item cadastrado no sistema.';}
             if($request->input('datainicio_at') == ''){return 'erro, Informar a data.';}
             if($request->input('datafim_at') == ''){return 'erro, Informar a data.';}
-            if($nameFile == null){return 'erro, Adicione o Atestado.';}
+            if($nameFile == null){return 'erro, Adicione uma foto.';}
 
 
  
@@ -81,23 +81,22 @@ class ProfileController extends Controller
             $dateEnd 	= new DateTime($datafim);
             $dateRange = array();
             $mes = 0;
-            while($dateStart <= $dateEnd){    
-                $mes = $dateStart->format('m');    
-                $dateRange[] = $dateStart->format('Y-m-d');
+            // while($dateStart <= $dateEnd){    
+            //     $mes = $dateStart->format('m');    
+            //     $dateRange[] = $dateStart->format('Y-m-d');
       
-                if($dateStart->format('N') > 5 ){
-                  return 5;
-                }
-                $dateStart = $dateStart->modify('+1day');           
-                 if($dateEnd->format('m') !== $mes ){
-                  return 5;
-                 }
+            //     if($dateStart->format('N') > 5 ){
+            //       return 5;
+            //     }
+            //     $dateStart = $dateStart->modify('+1day');           
+            //      if($dateEnd->format('m') !== $mes ){
+            //       return 5;
+            //      }
                 
-            }
+            // }
             $horasf = 8*count($dateRange);
 
             $horasf = $horasf.':00:00';
-
 
         
             $dados = new Atestado();

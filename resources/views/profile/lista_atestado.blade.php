@@ -11,6 +11,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Data Inicio</th>   
+                        <th>Data Fim</th>   
                         <th>Imagem</th>   
                         <th>Status</th>   
                         <th></th>   
@@ -22,6 +23,7 @@
                     <tr id="tab{{ $value->id }}" class="shadomtable">
                         <td>{{ $value->id }}</td>
                         <td><span style="font-size: 1px; color:#fff">{{$value->datainicio}}</span> {{ date( 'd/m/Y' , strtotime($value->datainicio))}}</td>     
+                        <td><span style="font-size: 1px; color:#fff">{{$value->datafim}}</span> {{ date( 'd/m/Y' , strtotime($value->datafim))}}</td>     
                         <?php
                             $end = $value->foto;
                             $pieces = explode(".", $end);

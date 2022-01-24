@@ -41,6 +41,18 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="myModalRelatorio_completo" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="background-color: #fff; padding: 20px;">
+        <div class="modal-content"  style="box-shadow: none" >
+            <div class="modal-header" style="padding: 0; margin: 0;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div id="card_relatorio_completo"> Carregando...</div>      
+        </div>
+    </div>
+</div>
 <style>
     .navint { width: 100%; margin-top: 20px; }
     .navint li{ list-style: none; color: #777;  display: inline; border-radius: 5px ; padding: 5px 10px; font-size: 10px; font-weight: 700; cursor: pointer; font-family: "Roboto", sans-serif; text-transform: uppercase;}
@@ -377,12 +389,31 @@
                 });
                 return false;
             }
+    }
+    function mostrar_relatorio_completo(){
+        $('#card_relatorio_completo').html('Carregando...');
+ 
+        let form = $('#form_filtros');
+        let param = null;
+        let atualizar = true;
+        var dados_serealize = [];
+            dados_serealize =  form.serializeArray();
+            dados_serealize.push({name: "card", value: 'card_relatorio_completo'},{name: "param", value: param});
 
-
-
-         
-
-        
+            console.log(dados_serealize);
+            if(atualizar){
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: appUrl+'/home/get_card',
+                    data: dados_serealize, 
+                    success: function(data)
+                    {                
+                        $('#card_relatorio_completo').html(data);
+                    }
+                });
+                return false;
+            }
     }
 </script>
     
