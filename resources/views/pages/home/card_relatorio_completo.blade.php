@@ -72,7 +72,9 @@ function horas_segundos2($total)
                 <th>Frente</th>
                 <th>Contratos</th>
                 <th>Valor por contrato</th>
-                <th>Total</th>
+                <th>Horas por contrato</th>
+                <th>Total Horas</th>
+                <th>Total Valor</th>
             </tr>
         </thead>
         <tbody>
@@ -84,6 +86,8 @@ function horas_segundos2($total)
                     <td>{{$value['frente']}}</td>
                     <td>{{$val['contrato']}}</td>
                     <td>{{$val['valorContrato']}}</td>
+                    <td>{{$val['segundosContrato']}}hs</td>
+                    <td>{{$value['segundosTotal']}}hs</td>
                     <td>{{$value['total']}}</td>
                 </tr>
 

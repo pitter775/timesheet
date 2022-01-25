@@ -2108,7 +2108,7 @@ class HomeController extends Controller
             $segundos = $this->converte_segundos($value->horas);
             $tarifa = trim($value->tarifa);
             $valor = $this->tarifa_segundos($tarifa, $segundos);
-            $lista_usuarios_data[] = ['iduser' => $value->iduser, 'nome' => $value->name, 'valor' => $valor, 'frente'=>$value->eqnome, 'contrato' => $value->ctnome, 'periodoinit' => $value->datainicio];
+            $lista_usuarios_data[] = ['iduser' => $value->iduser, 'segundos'=> $segundos, 'nome' => $value->name, 'valor' => $valor, 'frente'=>$value->eqnome, 'contrato' => $value->ctnome, 'periodoinit' => $value->datainicio];
         }
 
         //dd( $lista_usuarios_data);
@@ -2116,7 +2116,9 @@ class HomeController extends Controller
      
 
         $valorContrato = 0;
+        $segundosContrato = 0;
         $valortotal = 0;
+        $segundostotal = 0;
         $mes = '';
         $contrato = '';             
         $user = '';                
@@ -2134,18 +2136,24 @@ class HomeController extends Controller
             if ($value['nome'] == $user) {
                 if ($value['contrato'] == $contrato) {
                     $valorContrato = $valorContrato + $value['valor'];
+                    $segundosContrato = $segundosContrato + $value['segundos'];
                     $meses[] = $mes;
 
                 }else{
-                    $contratosGr[] = ['contrato'=> $contrato, 'valorContrato'=>$valorContrato, 'mes'=> $meses];
+                    $segundosContrato = $this->horas_segundos($segundosContrato);
+                    $contratosGr[] = ['contrato'=> $contrato, 'segundosContrato'=>$segundosContrato, 'valorContrato'=>$valorContrato, 'mes'=> $meses];
                     $contrato = $value['contrato'];
                     $valorContrato = $value['valor'];
+                    $segundosContrato = $value['segundos'];
                     $meses[] = $mes;
                 }
                 $valortotal = $valortotal + $value['valor'];
+                $segundostotal = $segundostotal + $value['segundos'];
             } else {
-                $contratosGr[] = ['contrato'=> $contrato, 'valorContrato'=>$valorContrato, 'mes'=> $meses];
-                $tablefull[] = ['nome'=> $user, 'frente'=> $frente, 'contratos'=> $contratosGr, 'total'=>$valortotal];     
+                $segundostotal = $this->horas_segundos($segundostotal);
+                $segundosContrato = $this->horas_segundos($segundosContrato);
+                $contratosGr[] = ['contrato'=> $contrato, 'segundosContrato'=>$segundosContrato, 'valorContrato'=>$valorContrato, 'mes'=> $meses];
+                $tablefull[] = ['nome'=> $user, 'frente'=> $frente, 'contratos'=> $contratosGr, 'total'=>$valortotal, 'segundosTotal'=>$segundostotal];     
 
                 $contratosGr = []; 
                 $meses = [];  
@@ -2155,11 +2163,15 @@ class HomeController extends Controller
                 $contrato = $value['contrato'];
                 $valortotal = $value['valor'];  
                 $valorContrato = $value['valor'];                        
+                $segundosContrato = $value['segundos'];
+                $segundostotal = $value['segundos'];                        
             }
 
             if(count($lista_usuarios_data) == $contdata){
-                $contratosGr[] = ['contrato'=> $contrato, 'valorContrato'=>$valorContrato, 'mes'=> $meses];
-                $tablefull[] = ['nome'=> $user, 'frente'=> $frente, 'contratos'=> $contratosGr, 'total'=>$valortotal]; 
+                $segundostotal = $this->horas_segundos($segundostotal);
+                $segundosContrato = $this->horas_segundos($segundosContrato);
+                $contratosGr[] = ['contrato'=> $contrato, 'segundosContrato'=>$segundosContrato, 'valorContrato'=>$valorContrato, 'mes'=> $meses];
+                $tablefull[] = ['nome'=> $user, 'frente'=> $frente, 'contratos'=> $contratosGr, 'total'=>$valortotal, 'segundosTotal'=>$segundostotal]; 
             }
         }
 
