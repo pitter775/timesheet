@@ -80,6 +80,7 @@ function horas_segundos2($total)
         <tbody>
             @foreach($tablefull as $key => $value)
                 @foreach($value['contratos'] as $key => $val)
+                @if($value['nome'])
 
                 <tr>
                     <td>{{$value['nome']}}</td>
@@ -90,7 +91,7 @@ function horas_segundos2($total)
                     <td>{{$value['segundosTotal']}}hs</td>
                     <td>{{$value['total']}}</td>
                 </tr>
-
+                @endif
                 @endforeach
             @endforeach
         </tbody>

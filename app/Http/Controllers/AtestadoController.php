@@ -34,6 +34,12 @@ class AtestadoController extends Controller
       }      
     }
 
+    public function add_create($add_anima){
+      $usuarios = User::orderBy('name')->get();
+      return view("pages.atestado.create", compact('add_anima', 'usuarios')); 
+
+    }
+
     public function add_lista($add_anima){
        $dados_lista  = DB::table('atestados AS f')
         ->join('users', 'users.id', '=', 'f.users_id')
@@ -52,6 +58,7 @@ class AtestadoController extends Controller
         ->first();
         return view("pages.atestado.editar", compact('dados_editar'));  
     }
+    
 
     public function store(Request $request){
         $id_geral = $request->input('id_geral'); 

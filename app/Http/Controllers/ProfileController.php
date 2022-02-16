@@ -57,6 +57,13 @@ class ProfileController extends Controller
     }
     public function store_atestado(Request $request){
 
+        $user = $request->input('usuario');
+        if(isset($user)){
+            $user = $user;
+        }else{
+            $user = Auth::user()->id;
+        }
+
         $tipo = $request->input('tipo');
         $nameFile = null;
         if ($request->hasFile('arquivo2') && $request->file('arquivo2')->isValid()) {
@@ -69,7 +76,7 @@ class ProfileController extends Controller
         if($tipo == 'dias'){
             $datainicio = $this->dateEmMysql($request->input('datainicio_at'));
             $datafim = $this->dateEmMysql($request->input('datafim_at'));
-            $tem = Atestado::where([['datainicio', $datainicio],['users_id', Auth::user()->id]])->get();
+            $tem = Atestado::where([['datainicio', $datainicio],['users_id', $user]])->get();
             if(!count($tem) == 0){return 'erro, Já existe esse item cadastrado no sistema.';}
             if($request->input('datainicio_at') == ''){return 'erro, Informar a data.';}
             if($request->input('datafim_at') == ''){return 'erro, Informar a data.';}
@@ -106,7 +113,9 @@ class ProfileController extends Controller
             $dados->horas = $horasf;
             
             $dados->foto = $nameFile;
-            $dados->users_id = Auth::user()->id;
+            $dados->users_id = $user;
+
+
             $dados->save();     
             return $dados->id;  
         }

@@ -26,10 +26,18 @@
                     anima_editado(id, tipo); 
                 });
             break;
+            case 'create':
+                $.get(appUrl+'/'+modulo+'/add/create-0', function(data){
+                    $('#card_create').html(data);
+                }); 
+            break;
             case null:
                 $.get(appUrl+'/'+modulo+'/add/lista-1', function(data){
                     $('#card_lista').html(data);
                 });
+                $.get(appUrl+'/'+modulo+'/add/create-1', function(data){
+                    $('#card_create').html(data);
+                }); 
             break;
         }
     }
@@ -100,5 +108,71 @@
                 }
             }
         });
+    }
+    function form_atestado() {  
+        let form = $('#form_atestado');
+        console.log(form.serializeArray());
+        var data = new FormData($("form[name='form_atestado']")[0]);
+        console.log(data);
+   
+        $.ajax({
+            type: "POST",
+            processData: false,
+            contentType: false,
+            url: appUrl+'/profile/atestado/cadastro',
+            data: data, 
+            success: function(data)
+            {
+                var result = data.split(',');
+                if(result[0] == 'erro'){
+                    demo.showNotification('top','center', 'danger', result[1]);
+                }else{                  
+                    demo.showNotification('top','center', 'success', 'Cadastro concluido com sucesso ');
+                    add_cards('lista_atestado',data, 'add');  
+                    document.getElementById('form_atestado').reset();
+                    $('.form-control').trigger("change");  
+                    add_cards('lista'); 
+                }
+            }
+        });
+    }
+    function verfoto(foto){
+        var fotof = ';'
+        var retorno = foto.split(".");
+        if(retorno[1] == 'pdf'){
+            fotof = '<embed src="/storage/'+foto+'" frameborder="0" width="100%" height="800px">';
+        }else{
+            fotof = '<img  src="/storage/'+foto+'">';
+        }
+        
+        $('.divverfoto').html(fotof);
+
+    }
+    function btdias(){
+        $('.escolha').hide();
+        $('.comdatas').show();
+        $('.tipodias').show();
+        $('#tipo').val('dias');
+        $('.form-control').trigger("change");
+    }
+    function bthoras(){
+        $('.escolha').hide();
+        $('.comdatas').show();
+        $('.tipohoras').show();
+        $('#tipo').val('horas');
+        $('#horas_at').pickatime({twelvehour: false,});
+        $('.form-control').trigger("change");
+    }
+    function btvoltar(){
+        $('#datahora').val('');
+        $('#horas_at').val('');
+        $('#datainicio_at').val('');
+        $('#datafim_at').val('');
+
+        $('.escolha').show();
+        $('.comdatas').hide();
+        $('.tipohoras').hide();
+        $('.tipodias').hide();
+        
     }
 </script>

@@ -245,12 +245,12 @@ class HomeController extends Controller
 
         $evento = Evento::all();
         foreach ($evento as $value) {
-            if ($value->users_id == 159) {
+            if ($value->users_id == 152) {
                 $periodo = Periodo::find($value->periodos_id);
                 //   if($periodo->datainicio > '2021-02-00' &&  $periodo->datainicio < '2021-02-30'){           
-                if ($periodo->datainicio > '2021-08-31') {
+                if ($periodo->datainicio > '2021-11-31') {
                     $novo = Evento::find($value->id);
-                    $novo->tarifa = '151,54';
+                    //$novo->tarifa = '151,54';
                     // $novo->alocacaos_id = 18; //apoio 14 - obras 18 - proj pac 13 - gestao 42
                     // $novo->departamentos_id = 7; //jica 9 - M02 8 - vio 12 - me01 7
                     // $novo->funcaos_id = 11; // enjenheiro jr 12;  enjeito seniior 11 ; tecnologo 19
@@ -520,6 +520,10 @@ class HomeController extends Controller
         $datafim = mktime(23, 59, 59, date('m'), date("t"), date('Y'));
         $datainicio = date('d/m/Y', $datainicio);
         $datafim = date('d/m/Y', $datafim);
+
+        if(Auth::user()->id == 214 ){
+            return redirect('/alocacoes');
+        }
 
         return view('pages.home.home', compact('datainicio', 'datafim'));
     }
@@ -2097,7 +2101,7 @@ class HomeController extends Controller
         $request->data_inicio = date('d/m/Y', strtotime($data_inicio));
         $request->data_fim = date('d/m/Y', strtotime($data_fim));
 
-        $colunas = 'users.id AS iduser, users.name, e.tarifa, e.horas, e.contratos_id, contratos.ctnome, equipes.eqnome, periodos.datainicio';
+        $colunas = 'users.id AS iduser, users.name, e.tarifa, e.horas, e.contratos_id, contratos.ctnome, contratos.ctnumero, equipes.eqnome, periodos.datainicio';
         $groupBy = '';
         $orderBy = 'ORDER BY users.name ASC, contratos.ctnome, periodos.datainicio';
         $lista_usuarios_full = $this->filtros($request, $colunas, $groupBy, $orderBy);
@@ -2108,7 +2112,7 @@ class HomeController extends Controller
             $segundos = $this->converte_segundos($value->horas);
             $tarifa = trim($value->tarifa);
             $valor = $this->tarifa_segundos($tarifa, $segundos);
-            $lista_usuarios_data[] = ['iduser' => $value->iduser, 'segundos'=> $segundos, 'nome' => $value->name, 'valor' => $valor, 'frente'=>$value->eqnome, 'contrato' => $value->ctnome, 'periodoinit' => $value->datainicio];
+            $lista_usuarios_data[] = ['iduser' => $value->iduser, 'segundos'=> $segundos, 'nome' => $value->name, 'valor' => $valor, 'frente'=>$value->eqnome, 'contrato' => $value->ctnome, 'ctnumero'=>$value->ctnumero, 'periodoinit' => $value->datainicio];
         }
 
         //dd( $lista_usuarios_data);
@@ -2141,7 +2145,7 @@ class HomeController extends Controller
 
                 }else{
                     $segundosContrato = $this->horas_segundos($segundosContrato);
-                    $contratosGr[] = ['contrato'=> $contrato, 'segundosContrato'=>$segundosContrato, 'valorContrato'=>$valorContrato, 'mes'=> $meses];
+                    $contratosGr[] = ['contrato'=> $value['ctnumero'].'- '.$contrato, 'segundosContrato'=>$segundosContrato, 'valorContrato'=>$valorContrato, 'mes'=> $meses];
                     $contrato = $value['contrato'];
                     $valorContrato = $value['valor'];
                     $segundosContrato = $value['segundos'];
@@ -2152,7 +2156,7 @@ class HomeController extends Controller
             } else {
                 $segundostotal = $this->horas_segundos($segundostotal);
                 $segundosContrato = $this->horas_segundos($segundosContrato);
-                $contratosGr[] = ['contrato'=> $contrato, 'segundosContrato'=>$segundosContrato, 'valorContrato'=>$valorContrato, 'mes'=> $meses];
+                $contratosGr[] = ['contrato'=> $value['ctnumero'].'- '.$contrato, 'segundosContrato'=>$segundosContrato, 'valorContrato'=>$valorContrato, 'mes'=> $meses];
                 $tablefull[] = ['nome'=> $user, 'frente'=> $frente, 'contratos'=> $contratosGr, 'total'=>$valortotal, 'segundosTotal'=>$segundostotal];     
 
                 $contratosGr = []; 

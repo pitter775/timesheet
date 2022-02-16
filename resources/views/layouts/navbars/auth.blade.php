@@ -25,7 +25,7 @@
                 if($acesso == 1){$menu =  'menu_consulta';}
             ?>   
             
-            @if(Auth::user()->id !== 214 )
+          
             <li class="{{ $elementActive == 'criacao' ? 'active' : '' }}" @if( $menu ==  'menu_consulta') style="display:none" @endif>
                 <a data-toggle="collapse" href="#pagesExamples" aria-expanded="false" class="{{ $elementActive == 'criacao' ? '' : 'collapse' }}" >
                     <i class="far fa-copy"></i>
@@ -117,12 +117,14 @@
                                 <span class="sidebar-normal"> Tarifas </span>
                             </a>
                         </li> 
+                        @if(Auth::user()->id !== 214 )
                         <li class="{{ $elementActive2 == 'usuarios' ? 'active' : '' }}">
                             <a href="/usuarios">
                                 <span class="sidebar-mini-icon"><i class="fas fa-users"></i></span>
                                 <span class="sidebar-normal"> Usuários </span>
                             </a>
                         </li>
+                        @endif
                     </ul>
                 </div>
             </li>
@@ -158,15 +160,15 @@
                     </ul>
                 </div>
             </li>
-            @endif
-
+            
+            @if(Auth::user()->id !== 214 )
             <li class="{{ $elementActive == 'home' ? 'active' : '' }}">
                 <a href="/home">             
                     <i class="far fa-chart-bar"></i>
                     <p>Home</p>
                 </a>
             </li>
-            @if(Auth::user()->id !== 214 )
+           
             <li class="{{ $elementActive == 'horas' ? 'active' : '' }}">
                 <a href="/horas">
                 <i class="far fa-clock"></i>
