@@ -36,7 +36,7 @@ function converte_em_horas($segundos){
 <style>
 
 </style>
-<div class="card card-calendar" data-aos="fade-left" data-aos-delay="0">  
+<div class="card card-calendar" id="card-calendario-user" data-iduser="{{Auth::user()->id}}" data-aos="fade-left" data-aos-delay="0">  
     <div class="card-body">   
             
         <div id='fullCalendar'></div>
@@ -326,6 +326,9 @@ function converte_em_horas($segundos){
     ?>
       eventClick: function(info) {
         console.log('eventClick');
+        
+        iduser = $('#card-calendario-user').data('iduser');
+        console.log('011',iduser);
 
         var retorno = info.event.title.split(" ");
         if(info.event.title !== 'Feriado' && info.event.title !== 'Periodo de Ausência' && retorno[0] !== 'Preencher'){
@@ -335,8 +338,10 @@ function converte_em_horas($segundos){
             fim = info.event.end;
             data = [dataAtualFormatada(inicio), dataAtualFormatada(fim)];
             dados_select = {inicio:dataAtualFormatada(inicio), fim:dataAtualFormatada(fim), evento:'eventClick'};
+           
             console.log(dados_select);
             $.get(appUrl+'/'+modulo+'/permissao_selecao', dados_select, function(retorno){
+              
               if(retorno == 0){
                 add_atividade(data,'1');
               }else{
@@ -356,17 +361,25 @@ function converte_em_horas($segundos){
       },
       select: function(info) {
         console.log('eventClick');
+    
       //  console.log('info');
         console.log(info.endStr);
         dados_select = {inicio:info.startStr, fim:info.endStr, evento:'selecao'};
         $.get(appUrl+'/'+modulo+'/permissao_selecao', dados_select, function(retorno){
-          //console.log(retorno);
-          if(retorno == 0){
-             data = [info.startStr, info.endStr];
+          iduser = $('#card-calendario-user').data('iduser');
+          if(iduser == 190){
+            data = [info.startStr, info.endStr];
             add_atividade(data);
           }else{
-            demo.showNotification('top','center', 'danger', 'Seleção não permitida!');
+            //console.log(retorno);
+            if(retorno == 0){
+              data = [info.startStr, info.endStr];
+              add_atividade(data);
+            }else{
+              demo.showNotification('top','center', 'danger', 'Seleção não permitida!');
+            }
           }
+          
         });
       },
       navLinkDayClick: function(date, jsEvent) {

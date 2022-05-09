@@ -40,7 +40,7 @@
                     <a class="nav-link active waves-effect" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-perfil" aria-selected="true"><i class="fas fa-user-alt" style="margin-right: 10PX;"></i> EDITAR PERFIL</a>
                     <a class="nav-link waves-effect" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i class="fas fa-unlock-alt" style="margin-right: 10PX;"></i> MUDAR A SENHA</a>
                     <a class="nav-link waves-effect" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="far fa-calendar-alt" style="margin-right: 10PX;"></i> SOLICITAR @if(auth()->user()->contrato == 'PJ') AUSÊNCIA @else FÉRIAS @endif</a>                    
-                    <a class="nav-link waves-effect" id="v-pills-atestado-tab" data-toggle="pill" href="#v-pills-atestado" role="tab" aria-controls="v-pills-atestado" aria-selected="false"><i class="fas fa-notes-medical" style="margin-right: 10PX;"></i> ATESTADO MÉDICO</a>                    
+                    @if(auth()->user()->contrato == 'CLT') <a class="nav-link waves-effect" id="v-pills-atestado-tab" data-toggle="pill" href="#v-pills-atestado" role="tab" aria-controls="v-pills-atestado" aria-selected="false"><i class="fas fa-notes-medical" style="margin-right: 10PX;"></i> ATESTADO MÉDICO</a>   @endif                 
                 </div>
             </div>
 

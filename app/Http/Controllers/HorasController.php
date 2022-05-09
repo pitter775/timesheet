@@ -540,30 +540,35 @@ class HorasController extends Controller
         $soma = true;    
         $contt =  $contt +1;  
 
-        foreach($dados_feriados as $fer){          
+        if(Auth::user()->id !== 190){
+          foreach($dados_feriados as $fer){          
 
-          if($fer->fn_data == $data){ 
-            $somaHuser = true; 
-            if($fer->horas_user == 1){
-              $somaHuser = false;
-              $dados_fer_user = Feriado_users::where('users_id',Auth::user()->id)->get();            
-              foreach($dados_fer_user as $feruser){            
-                if($feruser->feriados_id == $fer->id){                   
-                  //verificar se o feriado id faz parte da data               
-                  $total_horas =  $total_horas + $this->converte_segundos($fer->horas);
-                  $soma = false;
-                  $somaHuser = false;
-                               
+            if($fer->fn_data == $data){ 
+              $somaHuser = true; 
+              if($fer->horas_user == 1){
+                $somaHuser = false;
+                $dados_fer_user = Feriado_users::where('users_id',Auth::user()->id)->get();     
+                       
+                foreach($dados_fer_user as $feruser){            
+                  if($feruser->feriados_id == $fer->id){                   
+                    //verificar se o feriado id faz parte da data               
+                    $total_horas =  $total_horas + $this->converte_segundos($fer->horas);
+                    $soma = false;
+                    $somaHuser = false;
+                                 
+                  }
                 }
               }
-            }
-
-            if($somaHuser){              
-              $total_horas =  $total_horas + $this->converte_segundos($fer->horas);
-              $soma = false;
-            }
-          }         
+  
+              if($somaHuser){              
+                $total_horas =  $total_horas + $this->converte_segundos($fer->horas);
+                $soma = false;
+              }
+            }         
+          }
         }
+
+        
 
 
         if($soma){
@@ -813,6 +818,7 @@ class HorasController extends Controller
       return $horas.':'.$minutos.':00';
     }
     function converte_segundos($tempo){
+
         $segundos = 0;
         list( $h, $m, $s ) = explode( ':', $tempo ); 
         $segundos += $h * 3600; 

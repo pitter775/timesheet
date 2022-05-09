@@ -245,16 +245,16 @@ class HomeController extends Controller
 
         $evento = Evento::all();
         foreach ($evento as $value) {
-            if ($value->users_id == 152) {
+            if ($value->users_id == 42) {
                 $periodo = Periodo::find($value->periodos_id);
                 //   if($periodo->datainicio > '2021-02-00' &&  $periodo->datainicio < '2021-02-30'){           
-                if ($periodo->datainicio > '2021-11-31') {
+                if ($periodo->datainicio >= '2022-02-01') {
                     $novo = Evento::find($value->id);
-                    //$novo->tarifa = '151,54';
+                    $novo->tarifa = '153,03';
                     // $novo->alocacaos_id = 18; //apoio 14 - obras 18 - proj pac 13 - gestao 42
                     // $novo->departamentos_id = 7; //jica 9 - M02 8 - vio 12 - me01 7
-                    // $novo->funcaos_id = 11; // enjenheiro jr 12;  enjeito seniior 11 ; tecnologo 19
-                    $novo->equipes_id = 3;
+                    $novo->funcaos_id = 22; // engenheiro jr 12;  engeito seniior 11 ; tecnologo 19; engenheiro pleno 22
+                    //$novo->equipes_id = 3;
                     $novo->save();
                     echo 'ok - ';
                 }
