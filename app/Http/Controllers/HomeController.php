@@ -244,20 +244,22 @@ class HomeController extends Controller
 
 
         $evento = Evento::all();
+        $cont = 0;
         foreach ($evento as $value) {
-            if ($value->users_id == 42) {
+            if ($value->users_id == 231) {
+                $cont ++;
                 $periodo = Periodo::find($value->periodos_id);
                 //   if($periodo->datainicio > '2021-02-00' &&  $periodo->datainicio < '2021-02-30'){           
-                if ($periodo->datainicio >= '2022-02-01') {
+                // if ($periodo->datainicio <= '2022-04-30') {
                     $novo = Evento::find($value->id);
                     $novo->tarifa = '153,03';
                     // $novo->alocacaos_id = 18; //apoio 14 - obras 18 - proj pac 13 - gestao 42
-                    // $novo->departamentos_id = 7; //jica 9 - M02 8 - vio 12 - me01 7
+                    //$novo->departamentos_id = 5; //jica 9 - M02 8 - vio 12 - me01 7
                     $novo->funcaos_id = 22; // engenheiro jr 12;  engeito seniior 11 ; tecnologo 19; engenheiro pleno 22
-                    //$novo->equipes_id = 3;
+                   // $novo->equipes_id = 11;
                     $novo->save();
-                    echo 'ok - ';
-                }
+                    echo $cont.'ok - ';
+                //}
                 // $usuario = User::find($value->users_id);
                 // $novo = Evento::find($value->id);
                 // $novo->departamentos_id = $usuario->departamentos_id;
@@ -2145,7 +2147,7 @@ class HomeController extends Controller
 
                 }else{
                     $segundosContrato = $this->horas_segundos($segundosContrato);
-                    $contratosGr[] = ['contrato'=> $value['ctnumero'].'- '.$contrato, 'segundosContrato'=>$segundosContrato, 'valorContrato'=>$valorContrato, 'mes'=> $meses];
+                    $contratosGr[] = ['ctnumero'=> $value['ctnumero'], 'contrato'=> $contrato, 'segundosContrato'=>$segundosContrato, 'valorContrato'=>$valorContrato, 'mes'=> $meses];
                     $contrato = $value['contrato'];
                     $valorContrato = $value['valor'];
                     $segundosContrato = $value['segundos'];
@@ -2156,14 +2158,15 @@ class HomeController extends Controller
             } else {
                 $segundostotal = $this->horas_segundos($segundostotal);
                 $segundosContrato = $this->horas_segundos($segundosContrato);
-                $contratosGr[] = ['contrato'=> $value['ctnumero'].'- '.$contrato, 'segundosContrato'=>$segundosContrato, 'valorContrato'=>$valorContrato, 'mes'=> $meses];
-                $tablefull[] = ['nome'=> $user, 'frente'=> $frente, 'contratos'=> $contratosGr, 'total'=>$valortotal, 'segundosTotal'=>$segundostotal];     
+                $contratosGr[] = ['ctnumero'=> $value['ctnumero'], 'contrato'=> $contrato, 'segundosContrato'=>$segundosContrato, 'valorContrato'=>$valorContrato, 'mes'=> $meses];
+                $tablefull[] = ['nome'=> $user, 'frente'=> $frente,'ctnumero'=> $value['ctnumero'],  'contratos'=> $contratosGr, 'total'=>$valortotal, 'segundosTotal'=>$segundostotal];     
 
                 $contratosGr = []; 
                 $meses = [];  
                 $meses[] = $mes;
                 $user =  $value['nome'];
                 $frente =  $value['frente'];
+                $ctnumero = $value['ctnumero'];
                 $contrato = $value['contrato'];
                 $valortotal = $value['valor'];  
                 $valorContrato = $value['valor'];                        

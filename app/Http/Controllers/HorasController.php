@@ -296,6 +296,10 @@ class HorasController extends Controller
       ->select('*', 'u.id AS id')
       ->get();    
 
+      if(Auth::user()->id == 227){
+        return 0;
+      }
+
       return count($dados_feriados) +  count($dados_ferias1) + count($dados_ferias2) + $soma;
 
     }

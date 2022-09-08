@@ -70,21 +70,24 @@ function horas_segundos2($total)
             <tr>
                 <th>Nome</th>
                 <th>Frente</th>
+                <th>ID/Contrato</th>
                 <th>Contratos</th>
-                <th>Valor por contrato</th>
-                <th>Horas por contrato</th>
-                <th>Total Horas</th>
-                <th>Total Valor</th>
+                <th>V/contrato</th>
+                <th>H/contrato</th>
+                <th>Total/H</th>
+                <th>Total/V</th>
             </tr>
         </thead>
         <tbody>
             @foreach($tablefull as $key => $value)
+            
                 @foreach($value['contratos'] as $key => $val)
                 @if($value['nome'])
 
                 <tr>
                     <td>{{$value['nome']}}</td>
                     <td>{{$value['frente']}}</td>
+                    <td>{{$val['ctnumero'] ?? ''}}</td>
                     <td>{{$val['contrato']}}</td>
                     <td>{{$val['valorContrato']}}</td>
                     <td>{{$val['segundosContrato']}}hs</td>

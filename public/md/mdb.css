@@ -10638,8 +10638,8 @@ body.scrollable {
 
 @media (min-width: 992px) and (min-width: 992px) {
     .modal .modal-full-height.modal-lg {
-        width: 800px;
-        max-width: 800px
+        width: 90%;
+        max-width: 90%
     }
 }
 
