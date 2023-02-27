@@ -40,6 +40,7 @@ Route::get('storage/{filename}', function ($filename)
 
 Route::group(['middleware' => 'acesso'], function () {
 	Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');  
+	Route::get('/home/mudanca', 'App\Http\Controllers\HomeController@mudanca')->name('mudanca');  
 	Route::post('/home/get_card', 'App\Http\Controllers\HomeController@get_card');
 	Route::get('/home/atu_banco', 'App\Http\Controllers\HomeController@atu_banco');
 

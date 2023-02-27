@@ -325,7 +325,7 @@ function converte_em_horas($segundos){
      if(!$chamada){
     ?>
       eventClick: function(info) {
-        console.log('eventClick');
+        console.log('eventClick 328');
         
         iduser = $('#card-calendario-user').data('iduser');
         console.log('011',iduser);
@@ -360,17 +360,18 @@ function converte_em_horas($segundos){
       //  console.log(info);
       },
       select: function(info) {
-        console.log('eventClick');
+        console.log('eventClick 363');
     
       //  console.log('info');
         console.log(info.endStr);
         dados_select = {inicio:info.startStr, fim:info.endStr, evento:'selecao'};
         $.get(appUrl+'/'+modulo+'/permissao_selecao', dados_select, function(retorno){
-          iduser = $('#card-calendario-user').data('iduser');
-          if(iduser == 190){
-            data = [info.startStr, info.endStr];
-            add_atividade(data);
-          }else{
+          console.log(retorno);
+          //iduser = $('#card-calendario-user').data('iduser');
+          // if(iduser == 190){
+          //   data = [info.startStr, info.endStr];
+          //   add_atividade(data);
+          // }else{
             //console.log(retorno);
             if(retorno == 0){
               data = [info.startStr, info.endStr];
@@ -378,12 +379,12 @@ function converte_em_horas($segundos){
             }else{
               demo.showNotification('top','center', 'danger', 'Seleção não permitida!');
             }
-          }
+          // }
           
         });
       },
       navLinkDayClick: function(date, jsEvent) {
-        console.log('navLinkDayClick');
+        console.log('navLinkDayClick 386');
         
 
         var data_inicio = new Date(date.toISOString());
@@ -394,7 +395,7 @@ function converte_em_horas($segundos){
         dados = {inicio: data_inicio_ok, fim:data_inicio_ok, data_voltar:formatDate(data_inicio_ok)}; 
         dados_select = {inicio:data_inicio_ok, fim:data_fim_ok, evento:'clickdia'};
         $.get(appUrl+'/'+modulo+'/permissao_selecao', dados_select, function(retorno){
-          if(retorno == 0){            
+          // if(retorno == 0){   
             $( ".card-calendar" ).hide();
             $( ".card_lista_cale" ).hide();
             setTimeout(function(){ 
@@ -406,9 +407,9 @@ function converte_em_horas($segundos){
               });
             }, 200); 
 
-          }else{
-            demo.showNotification('top','center', 'danger', 'Seleção não permitida!');
-          }
+          // }else{
+          //   demo.showNotification('top','center', 'danger', 'Seleção não permitida!');
+          // }
         });
       }
       <?php } ?>

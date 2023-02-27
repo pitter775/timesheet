@@ -162,6 +162,53 @@ class HomeController extends Controller
         }
         return $userArray;
     }
+    public function mudanca()
+    {
+        $evento = DB::select(DB::raw(
+            "SELECT * FROM eventos As e
+            LEFT JOIN users ON users.id = e.users_id
+            LEFT JOIN funcaos ON funcaos.id = e.funcaos_id
+            LEFT JOIN alocacaos ON alocacaos.id = e.alocacaos_id
+            LEFT JOIN periodos ON periodos.id = e.periodos_id            
+            ORDER BY e.created_at ASC"
+        ));
+
+        // $evento = Evento::orderBy('created_at', 'asc')->get();
+        $userArray[] = [];
+
+        
+        foreach ($evento as $value) {
+            $muda = true;
+            foreach($userArray as $use){
+                if( $use['id'] ==  $value->name && 
+                    $use['equipes_id'] ==  $value->equipes_id &&
+                    $use['funcaos_id'] ==  $value->fndescricao &&
+                    $use['alocacaos_id'] ==  $value->aldescricao ){
+                        $muda = false;
+                }
+                
+            }
+            if($muda){
+                $userArray[] = ['id' => $value->name, 'equipes_id'=> $value->equipes_id, 'funcaos_id'=> $value->fndescricao, 'alocacaos_id'=>$value->aldescricao, 'created_at'=> $value->created_at];
+            }
+        }
+        foreach($userArray as $user){
+            echo $user['id']. ' - '.$user['equipes_id']. ' - '.$user['funcaos_id']. ' - '.$user['alocacaos_id']. ' - '.$user['created_at']. ' - <br>';
+        }
+        
+
+        // foreach ($evento as $value) {
+
+            
+
+        //     // $periodo = Periodo::find($value->periodos_id);
+        //     // if ($periodo->datainicio >= '2022-08-30') {
+        //     //     echo $periodo->datainicio;
+        //     // }
+        // }
+
+        
+    }
     public function atu_banco()
     {
 
@@ -246,21 +293,22 @@ class HomeController extends Controller
         $evento = Evento::all();
         $cont = 0;
         foreach ($evento as $value) {
-            if ($value->users_id == 231) {
+            if ($value->users_id == 227) {
                 $cont ++;
                 $periodo = Periodo::find($value->periodos_id);
-                //   if($periodo->datainicio > '2021-02-00' &&  $periodo->datainicio < '2021-02-30'){           
-                // if ($periodo->datainicio <= '2022-04-30') {
+                  if($periodo->datainicio > '2022-12-30' &&  $periodo->datainicio < '2022-02-00'){           
+                // if ($periodo->datainicio >= '2022-08-1') {
                     $novo = Evento::find($value->id);
-                    $novo->tarifa = '153,03';
-                    // $novo->alocacaos_id = 18; //apoio 14 - obras 18 - proj pac 13 - gestao 42
-                    //$novo->departamentos_id = 5; //jica 9 - M02 8 - vio 12 - me01 7
-                    $novo->funcaos_id = 22; // engenheiro jr 12;  engeito seniior 11 ; tecnologo 19; engenheiro pleno 22
-                   // $novo->equipes_id = 11;
-                    $novo->save();
-                    echo $cont.'ok - ';
-                //}
-                // $usuario = User::find($value->users_id);
+
+                    if($novo->contratos_id == 44){
+
+                        $novo->delete();
+                        echo $cont.'ok - ';
+                    }
+                    
+                    
+                }
+                // $usuario = User::find($value->users_id);git
                 // $novo = Evento::find($value->id);
                 // $novo->departamentos_id = $usuario->departamentos_id;
                 // $novo->save();    
@@ -268,6 +316,36 @@ class HomeController extends Controller
         }
         echo '<br>';
         echo 'terminou';
+
+
+
+
+
+        // $evento = Evento::all();
+        // $cont = 0;
+        // foreach ($evento as $value) {
+        //     if ($value->users_id == 152) {
+        //         $cont ++;
+        //         $periodo = Periodo::find($value->periodos_id);
+        //         //   if($periodo->datainicio > '2021-02-00' &&  $periodo->datainicio < '2021-02-30'){           
+        //         if ($periodo->datainicio >= '2022-08-1') {
+        //             $novo = Evento::find($value->id);
+        //             $novo->tarifa = '0,00';
+        //             // $novo->alocacaos_id = 18; //apoio 14 - obras 18 - proj pac 13 - gestao 42
+        //             //$novo->departamentos_id = 5; //jica 9 - M02 8 - vio 12 - me01 7
+        //             // $novo->funcaos_id = 22; // engenheiro jr 12;  engeito seniior 11 ; tecnologo 19; engenheiro pleno 22
+        //             $novo->equipes_id = 2;
+        //             $novo->save();
+        //             echo $cont.'ok - ';
+        //         }
+        //         // $usuario = User::find($value->users_id);git
+        //         // $novo = Evento::find($value->id);
+        //         // $novo->departamentos_id = $usuario->departamentos_id;
+        //         // $novo->save();    
+        //     }
+        // }
+        // echo '<br>';
+        // echo 'terminou';
 
         //  por favor modificar o usuario Ericles Medeiros da Silva - a partir de 01/09/2021 em diante tarifa 0, frente 2
         //  e o usuario Gustavo Nunes - a partir de 01/09/2021 em diante tarifa R$ 151,54, frente 3

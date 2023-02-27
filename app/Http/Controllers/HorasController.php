@@ -284,23 +284,46 @@ class HorasController extends Controller
       ->select('*', 'u.id AS id')
       ->get();
 
+
+      // montar o range do periodo de ferias 
+
+
       $dados_ferias1 = DB::table('ferias AS u')
-      ->where([['u.users_id', Auth::user()->id]])
-      ->whereIn('u.datainicio', $dateRange)
-      ->select('*', 'u.id AS id')
-      ->get();
+      ->where([['u.users_id', Auth::user()->id],['u.status', 1]])
+      ->orderBy('u.id', 'asc')
+      ->limit(1)
+      ->get(); 
 
-      $dados_ferias2 = DB::table('ferias AS u')
-      ->where([['u.users_id', Auth::user()->id]])
-      ->whereIn('u.datafim', $dateRange)
-      ->select('*', 'u.id AS id')
-      ->get();    
+     
+      $contdat = 0;
 
-      if(Auth::user()->id == 227){
-        return 0;
+      if(!count($dados_ferias1) == 0){
+        
+        $origin = date_create($dados_ferias1[0]->datainicio);
+        $target = date_create($dados_ferias1[0]->datafim);
+
+        $dateIniSele = date_create($request->inicio);
+        $dateFimSele = date_create($request->fim);
+        $dateFimSele =  $dateFimSele->modify('-1day'); 
+        $dateRangeFerias = array();
+                
+        $contdat2 = 0;
+        while($origin <= $target){
+          $contdat2 = $contdat2 +1;    
+
+            if($origin == $dateIniSele){
+              $contdat = $contdat +1;
+            }
+            if($origin == $dateFimSele){
+              $contdat = $contdat +1;
+            }
+            
+            $dateRangeFerias[] = $origin->format('Y-m-d');      
+            $origin = $origin->modify('+1day');  
+        }
       }
 
-      return count($dados_feriados) +  count($dados_ferias1) + count($dados_ferias2) + $soma;
+      return count($dados_feriados) + $contdat + $soma;
 
     }
     public function lista_mes_atual($anima_lista,$request){
@@ -544,7 +567,7 @@ class HorasController extends Controller
         $soma = true;    
         $contt =  $contt +1;  
 
-        if(Auth::user()->id !== 190){
+        // if(Auth::user()->id !== 190){
           foreach($dados_feriados as $fer){          
 
             if($fer->fn_data == $data){ 
@@ -570,7 +593,7 @@ class HorasController extends Controller
               }
             }         
           }
-        }
+        // }
 
         
 
