@@ -92,7 +92,10 @@ class FeriadoController extends Controller
     public function add_lista($add_anima){
         $dados_lista = DB::table('feriados AS u')
         ->join('feriados_tipos', 'feriados_tipos.id', 'u.feriados_tipos_id')
+        ->leftjoin('feriado_users', 'feriado_users.feriados_id', 'u.id')
+        ->leftjoin('users', 'users.id', 'feriado_users.users_id')
         ->select('*', 'u.id AS id')
+        ->orderBy('u.id','desc')
         ->get();
         return view("pages.feriados.lista", compact('dados_lista','add_anima'));
     }

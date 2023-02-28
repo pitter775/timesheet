@@ -14,6 +14,7 @@
                         <th>Login</th>    
                         <th>Data Início</th>    
                         <th>Data Fim</th>    
+                        <th>Qntd. dias</th>    
                         <th>Contrato</th>    
                         <th>Status</th>    
                         <th style="width: 50px;"></th>
@@ -28,6 +29,23 @@
                         <td>{{ $value->email }}</td>                                    
                         <td><span style="font-size: 1px; color:#fff">{{$value->datainicio}}</span> {{ date( 'd/m/Y' , strtotime($value->datainicio))}}</td>     
                         <td><span style="font-size: 1px; color:#fff">{{$value->datafim}}</span> {{ date( 'd/m/Y' , strtotime($value->datafim))}}</td>      
+                        <td>
+                            <?php 
+                                $dateStart = new DateTime($value->datainicio);
+                                $dateEnd = new DateTime($value->datafim);
+                                $dateRange = array();
+
+                                while ($dateStart <= $dateEnd) {
+                                    if($dateStart->format('m-d') == '12-25' || $dateStart->format('m-d') == '01-01' ){ }else{
+                                        $dateRange[] = $dateStart->format('Y-m-d');
+                                    }
+                                    $dateStart = $dateStart->modify('+1day'); 
+                                             
+                                }
+
+                                echo count($dateRange);
+                             ?>
+                        </td>      
                         <td>{{ $value->contrato }}</td>                                    
                         <td>@if($value->status == 0) <i class="fas fa-exclamation"></i> Pendente @else <i class="fas fa-check"></i> Ativo @endif</td>                                      
                  

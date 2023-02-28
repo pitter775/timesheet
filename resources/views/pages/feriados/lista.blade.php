@@ -10,6 +10,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Usuário</th>
                         <th>Data</th>    
                         <th>Descricao</th>    
                         <th>Tipo</th>    
@@ -22,6 +23,19 @@
                 @foreach($dados_lista as $key => $value)
                     <tr id="tab{{ $value->id }}" class="shadomtable">
                         <td>{{ $value->id }}</td>
+                        <td>
+                            <?php
+                                if($value->feriados_tipos_id == 9 ){
+                                    if($value->name == ''){
+                                        echo 'Algumas pessoas';
+                                    }else{
+                                        echo $value->name;
+                                    }
+                                }else {
+                                    echo 'Todos';
+                                }    
+                            ?>
+                        </td>
                         <td><span style="font-size: 1px; color:#fff">{{$value->fn_data}}</span><span style="font-size: 1px; color:#fff">{{$value->fn_data}}</span> {{ date( 'd/m/Y' , strtotime($value->fn_data))}}</td>
                         <td>{{ $value->fn_descricao }}</td>                                    
                         <td>{{ $value->ftdescricao }}</td>                                    
