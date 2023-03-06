@@ -57,6 +57,7 @@ Route::group(['middleware' => 'acesso'], function () {
 	Route::get('/feriados/add/{card}', 'App\Http\Controllers\FeriadoController@add_card');
 	Route::get('/feriados/delete/{id}', 'App\Http\Controllers\FeriadoController@delete');
 	Route::get('/feriados/editar/{id}', 'App\Http\Controllers\FeriadoController@editar');
+	Route::get('/feriados/analisarData/{date}', 'App\Http\Controllers\FeriadoController@analisarData');
 	Route::post('/feriados/cadastro', 'App\Http\Controllers\FeriadoController@store');
 
 

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use PDOException;
+use DateTime;
 
 class FeriadoController extends Controller
 {
@@ -75,18 +76,18 @@ class FeriadoController extends Controller
     }
 
     public function add_card($card){
-      $cards = explode("-", $card);
-      $anima_create = $cards[1] == 1?'data-aos=fade-left data-aos-delay=0':'';  
-      $anima_lista = $cards[1] == 1?'data-aos=fade-left data-aos-delay=200':'';  
+        $cards = explode("-", $card);
+        $anima_create = $cards[1] == 1?'data-aos=fade-left data-aos-delay=0':'';  
+        $anima_lista = $cards[1] == 1?'data-aos=fade-left data-aos-delay=200':'';  
 
-      switch ($cards[0]) {
-        case 'lista':               
-            return $this->add_lista($anima_lista);
-            break;
-        case 'create':
-          return $this->add_create($anima_create);
-            break;
-      }      
+        switch ($cards[0]) {
+            case 'lista':               
+                return $this->add_lista($anima_lista);
+                break;
+            case 'create':
+            return $this->add_create($anima_create);
+                break;
+        }      
     }
 
     public function add_lista($add_anima){
@@ -114,6 +115,34 @@ class FeriadoController extends Controller
     public function editar($id){
         $dados_editar = Feriado::find($id);
         return view("pages.feriados.editar", compact('dados_editar'));  
+    }
+
+    public function analisarData($date){
+        $dados_editar  = DB::table('ferias AS f')
+        ->join('users', 'users.id', '=', 'f.users_id')
+        ->select('*', 'f.id AS id','users.id as iduser', 'f.status As status')
+        ->get();
+
+        $users = null;
+
+        foreach($dados_editar as $value){
+
+            $datainicio     = new DateTime($value->datainicio);
+            $datafim     = new DateTime($value->datafim);
+
+            while ($datainicio <= $datafim) {               
+                if($date == $datainicio->format('Y-m-d')){
+                    $users[] = ['id'=>$value->iduser, 'name'=>$value->name, 'datainicio'=>$value->datainicio, 'datafim'=>$value->datafim, 'status'=>$value->status];
+                }
+                $datainicio = $datainicio->modify('+1day');
+            }
+          
+        }
+        if($users){
+            return view("pages.feriados.lista-ferias", compact('users'));
+        }
+        return $users;
+                
     }
 
     public function store(Request $request){

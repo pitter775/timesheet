@@ -7,6 +7,8 @@
     .rowatividade:hover{ border: solid 1px #fff;  -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 10px 0 rgba(0, 0, 0, 0.12); box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 10px 0 rgba(0, 0, 0, 0.12);}
 </style>
 
+
+
         <div class="row">
             <div class="col-md-4">
                 <div class="card">
@@ -213,6 +215,7 @@
             $('#fn_data_envio').val(data);
             $('#fn_data').val(resultdata);
             $('.form-control').trigger("change");   
+            analisarDataSelecionada(info.startStr);
         },
         navLinkDayClick: function(date, jsEvent) {        
             let result = date.toISOString().split('T');  
@@ -224,11 +227,30 @@
         },
         
         
+        });
+        var eventSource = calendar.getEventSourceById('a');
+        calendar.setOption('locale', 'pt-br');
+        calendar.render();
+    }
+
+    $(document).on('click', '#fn_data', function() {
+        if($('#fn_data').val()){
+            data = $('#fn_data').val();
+            let result = data.split('/');
+            let resultdata = result[2]+'-'+result[1]+'-'+result[0];
+            analisarDataSelecionada(resultdata);      
+        }
     });
-    var eventSource = calendar.getEventSourceById('a');
-    calendar.setOption('locale', 'pt-br');
-    calendar.render();
-  }
+
+    function analisarDataSelecionada (data){
+        $.get(appUrl+'/feriados/analisarData/'+data, function(retorn){
+            if(retorn){
+                $('#retorno_tb_ferias').html(retorn);
+                $('#myModal_ferias').modal('toggle');
+            }
+        });
+    }
+
     function formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
