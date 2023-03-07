@@ -20,6 +20,8 @@
 
     <script src="{{ asset('paper') }}/js/core/jquery.min.js"></script>
 
+    
+
 
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
@@ -396,6 +398,7 @@
       <!-- Select JS -->
       <script src="{{ asset('paper') }}/js/index.js"></script>
       <script src="{{ asset('paper') }}/js/selectize.js"></script>
+      <script src="//cdn.datatables.net/plug-ins/1.13.3/filtering/type-based/accent-neutralise.js"></script>
 
     <!-- <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
