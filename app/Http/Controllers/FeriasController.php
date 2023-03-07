@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 use App\Models\Feria;
+use App\Models\Feriado;
+use App\Models\Feriado_users;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use DateTime;
 use PDOException;
+use Carbon\Carbon;
 
 
 
@@ -55,6 +59,89 @@ class FeriasController extends Controller
         ->where('f.id', $id)
         ->first();
         return view("pages.ferias.editar", compact('dados_editar'));  
+    }
+
+    public function verComp(Request $request){
+
+      //bater em cada data das ferias e ver se tem na tabela de feriados
+      $dateStart = $this->dateEmMysql($request->input('datainicio'));
+      $dateEnd = $this->dateEmMysql($request->input('datafim'));   
+      $dateStart = new DateTime($dateStart); 
+      $dateEnd = new DateTime($dateEnd);   
+      $dateEndF =  $dateEnd;  
+
+      while ($dateStart <= $dateEnd) {             
+         $feriados  = DB::table('feriados as f')
+         ->where('f.feriados_tipos_id', 9)
+         ->whereBetween('f.fn_data', [$dateStart->format('Y-m-d'), $dateEnd->format('Y-m-d')])
+         ->get();          
+        
+         
+         foreach($feriados as $val){     
+            
+            if($dateStart->format('Y-m-d') == $val->fn_data){           
+                       
+               if($val->horas_user == 0){
+                  //todos, entao acrescentar o mesmo depois das ferias 
+                  $dados = new Feriado();
+
+                  $dateEndF = $this->veriricadata($dateEndF);                 
+                  $dados->fn_data = $dateEndF->format('Y-m-d');
+                  $dados->fn_descricao = $val->fn_descricao;
+                  $dados->feriados_tipos_id =  $val->feriados_tipos_id;
+                  $dados->horas = $val->horas;
+                  $dados->horas_user = 1;                  
+                  $dados->users_id_atualizou = Auth::user()->id;
+                  $dados->save(); 
+
+                  $dados_user = new Feriado_users();
+                  $dados_user->feriados_id = $dados->id;
+                  $dados_user->users_id  = $request->input('usuario');
+                  $dados_user->save(); 
+
+                  $userids[] = $request->input('usuario');  
+
+               }
+
+            };
+         }         
+         $dateStart = $dateStart->modify('+1day');
+      }
+
+      $this->store($request);
+
+    }
+
+    public function veriricadata($dateEndF){
+      $tem = false;
+      $semana =  Carbon::parse($dateEndF)->format('l');
+
+      if($semana == 'Friday'){
+         $tem = true;
+         $dateEndF->modify('+3day');
+      } 
+      if($semana == 'Saturday'){
+         $tem = true;
+         $dateEndF->modify('+2day');
+      }
+      if($semana == 'Sunday'){
+         $tem = true;
+         $dateEndF->modify('+1day');
+      }
+      if(!$tem){
+         $dateEndF->modify('+1day');
+      }
+
+      $feriadosff  = DB::table('feriados as f')
+      ->where([['f.fn_data', $dateEndF->format('Y-m-d')],['f.horas', null]])        
+      ->count(); 
+
+      if($feriadosff > 0){
+         $dateEndF->modify('+1day');
+      }
+
+      return $dateEndF;
+
     }
 
     public function store(Request $request){

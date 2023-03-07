@@ -87,6 +87,7 @@
             data: form.serializeArray(), 
             success: function(data)
             {
+                //console.log(data);
                 var result = data.split(',');
                 if(result[0] == 'erro'){
                     demo.showNotification('top','center', 'danger', result[1]);

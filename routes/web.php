@@ -165,7 +165,7 @@ Route::group(['middleware' => 'acesso'], function () {
 	Route::get('/ferias/add/{card}', 'App\Http\Controllers\FeriasController@add_card');
 	Route::get('/ferias/delete/{id}', 'App\Http\Controllers\FeriasController@delete');
 	Route::get('/ferias/editar/{id}', 'App\Http\Controllers\FeriasController@editar');
-	Route::post('/ferias/cadastro', 'App\Http\Controllers\FeriasController@store'); 
+	Route::post('/ferias/cadastro', 'App\Http\Controllers\FeriasController@verComp'); 
 
 	Route::get('/atestado', 'App\Http\Controllers\AtestadoController@index')->name('atestado');
 	Route::get('/atestado/add/{card}', 'App\Http\Controllers\AtestadoController@add_card');
