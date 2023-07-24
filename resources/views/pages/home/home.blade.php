@@ -49,7 +49,7 @@
                 <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div id="card_relatorio_completo"> Carregando...</div>      
+            <div id="card_relatorio_completo"></div>      
         </div>
     </div>
 </div>
@@ -390,8 +390,34 @@
                 return false;
             }
     }
+    function mostrar_relatorio_completo_export(){
+        // $('#card_relatorio_completo').html('Carregando...');
+
+        console.log('teste');
+ 
+      
+        let param = null;
+        let atualizar = true;
+        var dados_serealize = [];
+            dados_serealize.push({name: "card", value: 'card_relatorio_completo_export'},{name: "param", value: param});
+            if(atualizar){
+                console.log('vei');
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: appUrl+'/home/get_card',
+                    data: dados_serealize, 
+                    success: function(data)
+                    {       
+                        console.log('foi');         
+                        $('#card_relatorio_completo').html(data);
+                    }
+                });
+                return false;
+            }
+    }
     function mostrar_relatorio_completo(){
-        $('#card_relatorio_completo').html('Carregando...');
+        // $('#card_relatorio_completo').html('Carregando...');
  
         let form = $('#form_filtros');
         let param = null;

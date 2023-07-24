@@ -15,7 +15,7 @@
         <div class="col-md-8" >
             <div id="grafico_contrato_rs" class="divgrafico" style="height: 500px; margin-left:-20px "></div> 
         </div>                          
-        <div class="col-md-4 chardcardrigh" style="text-align: left; ">
+        <div class="col-md-4 chardcardrigh" style="text-align: left;">
             <div style="margin-top: -20px;">
                 <?php $total_segundos = $total_horas[0]->total; $contlist = 0 ?>
                 @foreach($lista_contratos as $key => $value)
@@ -295,6 +295,7 @@
 
     $('#btvolta_contato1').on('click',function(){        
         $('#front_contrato1').addClass('virar-front');            
+        $('.chardcardrigh').hide();            
         $('#back_contrato1').addClass('virar-back');            
     });
 

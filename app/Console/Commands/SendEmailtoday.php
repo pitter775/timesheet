@@ -6,10 +6,12 @@ use App\Http\Controllers\AvisosController;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redirect;
-use App\Jobs\newDisparo;
+// use App\Jobs\newDisparo;
+use App\Mail\newDisparo;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use stdClass;
+use Illuminate\Support\Facades\Mail;
 
 class SendEmailtoday extends Command
 {
@@ -44,6 +46,7 @@ class SendEmailtoday extends Command
      */
     public function handle()
     {
+      
         //verificar quem nao preencheu as horas do dia e enviar o email dizendo para preencher 
 
         $userEmails = $this->userpreenche();
@@ -53,6 +56,7 @@ class SendEmailtoday extends Command
             $user = new stdClass();
             $user->name = $value['name'];
             $user->email = $value['email'];
+            //$user->email = 'pitter775@gmail.com';
             $user->titulo = 'Diário de Ativos - Lembrete.';
             $user->ultimo = $value['ultimodia'];
 
@@ -62,9 +66,11 @@ class SendEmailtoday extends Command
                               Certos de sua colaboração, desde já agradecemos! <br><br> Att., <br> Gestão e Controle Inovasan';
 
             $user->subject = 'Diário de Ativos - Lembrete.';
-            // if($value['id'] == 12){
-                newDisparo::dispatch($user)->delay(now()->addSecond('2'));        
-            // }
+            //if($value['id'] == 12){
+                //dd($user);
+                Mail::send(new newDisparo($user));
+                //newDisparo::dispatch($user)->delay(now()->addSecond('2'));        
+            //}
         }
 
     }    

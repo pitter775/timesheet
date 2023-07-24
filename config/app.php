@@ -175,6 +175,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
+        // PhpOffice\PhpSpreadsheet\SpreadsheetServiceProvider::class,
 
     ],
 
@@ -228,6 +229,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Datatables' => Yajra\Datatables\Facades\Datatables::class,
+        // 'Spreadsheet' => PhpOffice\PhpSpreadsheet\Spreadsheet::class,
+        
         
 
     ],

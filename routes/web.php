@@ -12,15 +12,17 @@ use Illuminate\Http\Request;
 //use Illuminate\Auth;
 
 Route::get('/', 'App\Http\Controllers\HomeController@index')->name('home'); 
-Route::get('disparar-email', function (){
+Route::get('excel', 'App\Http\Controllers\ExcelController@index'); 
+Route::get('relatorio', 'App\Http\Controllers\HomeController@relatorioExcel'); 
+Route::get('/disparar-email', function (){
 	$user = new stdClass();
 	$user->name = 'pitter web';
 	$user->email = 'pitter775@gmail.com';
-	//return new newDisparo($user);
+	return new newDisparo($user);
 	// Mail::send(new newDisparo($user));	
 	// JobsNewdisparo::dispatch($user)->delay(now()->addSecond('2'));
 	// JobsNewdisparo::dispatch($user)->delay(now()->addSecond('2'));
-	newDisparo::dispatch($user)->delay(now()->addSecond('2'));
+	//newDisparo::dispatch($user)->delay(now()->addSecond('2'));
 });
 Auth::routes();
 Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
@@ -38,11 +40,18 @@ Route::get('storage/{filename}', function ($filename)
     return $response; 
 });
 
+
+
+
+
+
 Route::group(['middleware' => 'acesso'], function () {
 	Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');  
 	Route::get('/home/mudanca', 'App\Http\Controllers\HomeController@mudanca')->name('mudanca');  
 	Route::post('/home/get_card', 'App\Http\Controllers\HomeController@get_card');
 	Route::get('/home/atu_banco', 'App\Http\Controllers\HomeController@atu_banco');
+	Route::get('/home/exportar_excel', 'App\Http\Controllers\HomeController@exportar_excel');
+	
 
 	Route::get('/avisos', 'App\Http\Controllers\AvisosController@index')->name('avisos');
 	Route::get('/avisos/disparar-email', 'App\Http\Controllers\AvisosController@enviar_email')->name('enviarEmail');
@@ -103,6 +112,7 @@ Route::group(['middleware' => 'acesso'], function () {
 	Route::get('/usuarios', 'App\Http\Controllers\UserController@index')->name('usuarios');
 	Route::get('/usuarios/add/{card}', 'App\Http\Controllers\UserController@add_card');
 	Route::post('/usuarios/cadastro', 'App\Http\Controllers\UserController@store');
+	Route::post('/usuarios/cadastro_retro', 'App\Http\Controllers\UserController@store_retro');
 	Route::get('/usuarios/editar/{id}', 'App\Http\Controllers\UserController@editar');
 	Route::get('/usuarios/delete/{id}', 'App\Http\Controllers\UserController@delete');
 

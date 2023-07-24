@@ -76,6 +76,23 @@
             }
         });
     }
+    function form_informacoes_edit_retro() {        
+        let form = $('#form_informacoes_edit_retro');
+        console.log(form.serializeArray());
+        var idgeral = $('#id_geral_edit').val();
+        $.ajax({
+            type: "POST",
+            url: appUrl+'/'+modulo+'/cadastro_retro',
+            data: form.serializeArray(), 
+            success: function(data)
+            {
+                demo.showNotification('top','center', 'success', 'Foram feitas '+data+' alterações');
+                    add_cards('lista',idgeral, 'edit');  
+                    $('#myModal_lista').modal('toggle');
+                
+            }
+        });
+    }
     
     function form_informacoes() {    
         let form = $('#form_informacoes');

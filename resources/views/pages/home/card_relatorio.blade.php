@@ -55,27 +55,21 @@ function horas_segundos2($total){
         </thead>
         <tbody>
             @foreach($lista_usuario_mes as $key => $value) 
-                <tr style="background-color: #ccc;">
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                </tr>             
+           
                 @foreach($value as $key1 => $value1)
                  
                     @foreach($value1 as $key2 => $value2)
-                        <tr>
-                            <td>{{$value2['id']}}</td>
-                            <td>{{$value2['name']}}</td>
-                            <td>{{$value2['cargo']}}</td>
-                            <td>{{ date( 'd/m/Y' , strtotime($value2['data_inicio']))}}</td>
-                            <td>{{ date( 'd/m/Y' , strtotime($value2['data_fim']))}}</td>                            
-                            <td><?php echo horas_segundos($value2['total']) ?></td>
-                            <td>{{$value2['custo']}}</td>
-                        </tr>
+                        @if($value2['name'])
+                            <tr>
+                                <td>{{$value2['id'] ?? ''}}</td>
+                                <td>{{$value2['name'] ?? ''}}</td>
+                                <td>{{$value2['cargo'] ?? ''}}</td>
+                                <td>{{ date( 'd/m/Y' , strtotime($value2['data_inicio']))}}</td>
+                                <td>{{ date( 'd/m/Y' , strtotime($value2['data_fim']))}}</td>                            
+                                <td><?php echo horas_segundos($value2['total']) ?></td>
+                                <td>{{$value2['custo'] ?? ''}}</td>
+                            </tr>
+                        @endif
 
                     @endforeach
                    
@@ -99,14 +93,19 @@ function horas_segundos2($total){
                 [30]
                 ],
             responsive: true,
-            order: false,
+            order: true,
             language: {
-            search: "_INPUT_",
-            searchPlaceholder: "Buscar", 
-            "decimal": ",",
-            "thousands": "."
+                search: "_INPUT_",
+                searchPlaceholder: "Buscar", 
+                "decimal": ",",
+                "thousands": "."
             },
-            "columnDefs": [{"targets": [ 0 ],"visible": false,"searchable": false},{ type: 'time-uni', targets: 4 }]                             
+            "columnDefs": [{
+                "targets": [ 0 ],
+                "visible": false,
+                "searchable": false
+            },
+            { type: 'time-uni', targets: 4 }]                             
     });
 
     setTimeout(function(){ 

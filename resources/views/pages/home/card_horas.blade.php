@@ -53,8 +53,10 @@ $porcentagem = round($porcentagem);
             <span class="divdias" style="font-weight: 600; font-size: 14px; margin-left:20px; color:#727f93">{{$total_dias}} dias </span>
         </div>
         @if(Auth::user()->perfil == 2) 
-            <button type="button" style="float: right; cursor: pointer;" data-toggle="modal" data-target="#myModalRelatorio" onclick="mostrar_relatorio()" class="btn btn-outline-primary btn-sm btn-rounded waves-effect btrelatorio">Relatório de usuários</button>
-            <button type="button" style="float: right; cursor: pointer;" data-toggle="modal" data-target="#myModalRelatorio_completo" onclick="mostrar_relatorio_completo()" class="btn btn-outline-primary btn-sm btn-rounded waves-effect btrelatorio">Relatório completo</button>
+        <button type="button" style="float: right; cursor: pointer;" data-toggle="modal" data-target="#myModalRelatorio_completo" onclick="mostrar_relatorio_completo_export()" class="btn btn-outline-primary btn-sm btn-rounded waves-effect btrelatorio">Exportar</button>
+            <button type="button" style="float: right; cursor: pointer;" data-toggle="modal" data-target="#myModalRelatorio" onclick="mostrar_relatorio()" class="btn btn-outline-primary btn-sm btn-rounded waves-effect btrelatorio">Usuários</button>
+            <button type="button" style="float: right; cursor: pointer;" data-toggle="modal" data-target="#myModalRelatorio_completo" onclick="mostrar_relatorio_completo()" class="btn btn-outline-primary btn-sm btn-rounded waves-effect btrelatorio">Relatório</button>
+            
         @endif
     </div>
     <div class="col-5" style="text-align: right; margin-top: 5px">

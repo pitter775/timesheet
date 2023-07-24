@@ -36,7 +36,7 @@ class newDisparo implements ShouldQueue
      */
     public function handle()
     {
-        // Mail::send(new newDisparo($this->user));
+        //Mail::send(new newDisparo($this->user));
         Mail::send(new MailNewDisparo($this->user));
     }
 }

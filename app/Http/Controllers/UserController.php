@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use App\Models\Evento;
+use App\Models\Periodo;
 use PDOException;
 
 
@@ -58,6 +60,36 @@ class UserController extends Controller
       return view("pages.usuarios.create", compact('alocacao','funcao','add_anima','equipe','departamento'));   
     }
 
+    public function store_retro(Request $request){
+
+      $id_geral = $request->input('id_geral');   
+      
+      $dataInicio = date('Y-m-d', strtotime($request->input('dataInicio')));
+      $dataFim = date('Y-m-d', strtotime($request->input('dataFim')));
+
+      
+      
+      $evento = Evento::all();
+      $cont = 0;
+      foreach ($evento as $value) {
+          if ($value->users_id == $id_geral) {
+            
+            $periodo = Periodo::find($value->periodos_id);
+              if($periodo->datainicio >=  $dataInicio &&  $periodo->datainicio <= $dataFim){         
+            
+                $novo = Evento::find($value->id);
+                $novo->tarifa = $request->input("tarifa");
+                $novo->alocacaos_id = $request->input("alocacaos_id");
+                $novo->departamentos_id = $request->input("departamentos_id");
+                $novo->funcaos_id = $request->input("funcaos_id");
+                $novo->equipes_id = $request->input("equipes_id");
+                $novo->save();
+                $cont ++;
+              }  
+          }
+      }
+      return $cont;
+    }
     public function store(Request $request){
       $id_geral = $request->input('id_geral');   
       

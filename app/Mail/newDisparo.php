@@ -32,7 +32,7 @@ class newDisparo extends Mailable
     {
         $this->subject($this->user->subject);
         $this->to($this->user->email, $this->user->name);
-        // return $this->view('newdisparo', [ 'user' => $this->user]);
+        //return $this->view('newdisparo', [ 'user' => $this->user]);
         return $this->markdown('newdisparo', [ 'user' => $this->user]);
     }
 }

@@ -111,7 +111,7 @@ if($contrato_ativo == ''){
                                     <th ><i class="fas fa-running"></i></th>    
                                     <th >R$</th>    
                                 @endif
-                                <th >Horas</th>    
+                                <th >Horass</th>    
                             </tr>
                         </thead>
                         <tbody>
@@ -208,7 +208,8 @@ if($contrato_ativo == ''){
     },  100);
     $('#btvira_contrato').on('click',function(){        
         $('#front_contrato1').removeClass('virar-front');            
-        $('#back_contrato1').removeClass('virar-back');            
+        $('#back_contrato1').removeClass('virar-back');      
+        $('.chardcardrigh').show();         
     });
 
     

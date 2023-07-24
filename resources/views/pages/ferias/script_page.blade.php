@@ -60,7 +60,7 @@
     function form_informacoes_edit() {        
         let form = $('#form_informacoes_edit');
         var idgeral = $('#id_geral_edit').val();
-        console.log(form.serializeArray());
+       
         $.ajax({
             type: "POST",
             url: appUrl+'/'+modulo+'/cadastro',
@@ -81,21 +81,35 @@
     
     function form_informacoes() {    
         let form = $('#form_informacoes');
+        $('#nomeUser').text($( "#usuario option:selected" ).text());
+        
         $.ajax({
             type: "POST",
             url: appUrl+'/'+modulo+'/cadastro',
             data: form.serializeArray(), 
             success: function(data)
             {
-                //console.log(data);
-                var result = data.split(',');
-                if(result[0] == 'erro'){
-                    demo.showNotification('top','center', 'danger', result[1]);
-                }else{                  
-                    demo.showNotification('top','center', 'success', 'Cadastro concluido com sucesso ');
+                console.log('teste01');
+                
+                if(data == '2'){
+                    var result = data.split(',');
+                    if(result[0] == 'erro'){
+                        demo.showNotification('top','center', 'danger', result[1]);
+                    }else{                  
+                        demo.showNotification('top','center', 'success', 'Cadastro concluido com sucesso ');
+                        add_cards('lista',data, 'add');  
+                        document.getElementById('form_informacoes').reset();
+                        $('.form-control').trigger("change");  
+                    }
+                }else{
+                    $('#retorno_tb_ferias').html(data)
+                    $('#myModal_ferias').modal('toggle');
+                   
                     add_cards('lista',data, 'add');  
                     document.getElementById('form_informacoes').reset();
                     $('.form-control').trigger("change");  
+
+                    demo.showNotification('top','center', 'success', 'Cadastro concluido com sucesso ');
                 }
             }
         });

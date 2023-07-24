@@ -102,15 +102,73 @@ class FeriadoController extends Controller
     }
 
     public function add_create($add_anima){
+
         $tipo_feriado = Feriados_tipo::all();
+
         $usuarios = User::all();
-        $dados_lista = DB::table('feriados AS u')
+
+        $dados_lista1 = DB::table('feriados AS u')
         ->join('feriados_tipos', 'feriados_tipos.id', 'u.feriados_tipos_id')
         ->select('*', 'u.id AS id')
+        ->orderBy('fn_data', 'asc')
         ->get();
+
+        $diasHistory = [];
+        $dados_lista = [];
+
+        // +"id": 120
+        // +"feriados_tipos_id": 1
+        // +"fn_data": "2021-01-01"
+        // +"fn_descricao": "Confraternização Universal"
+        // +"horas": null
+        // +"created_at": null
+        // +"updated_at": null
+        // +"users_id_atualizou": 12
+        // +"horas_user": 0
+        // +"ftdescricao": "Feriado Nacional"
+
+        
+
+        foreach($dados_lista1 as $val){
+
+            if(array_search($val->fn_data, $diasHistory)){
+                //modifica o ultimo array de dados_lista fn_descricao para mais de um
+
+                $ultimoarray = end($dados_lista);
+                array_pop($dados_lista);
+                $dados_lista[] = [
+                    'id' => $ultimoarray['id'], 
+                    'feriados_tipos_id' => $ultimoarray['feriados_tipos_id'],
+                    'fn_data' => $ultimoarray['fn_data'],
+                    'fn_descricao' => 'Muitos aqui',
+                    'horas'=> $ultimoarray['horas'],
+                    'horas_user'=> $ultimoarray['horas_user'],
+                    'ftdescricao'=> $ultimoarray['ftdescricao']
+                ];
+               
+            }else{
+                $diasHistory [] = $val->fn_data;
+                $dados_lista[] = [
+                    'id' => $val->id, 
+                    'feriados_tipos_id' => $val->feriados_tipos_id,
+                    'fn_data' => $val->fn_data,
+                    'fn_descricao' => $val->fn_descricao,
+                    'horas'=> $val->horas,
+                    'horas_user'=> $val->horas_user,
+                    'ftdescricao'=> $val->ftdescricao
+                ];
+            }
+        }
+
+        $dados_lista = collect($dados_lista);
+
+        // dd($resudados_listafinal);
 
         return view("pages.feriados.create", compact('add_anima','tipo_feriado','dados_lista','usuarios'));
     }
+
+    
+
 
     public function editar($id){
         $dados_editar = Feriado::find($id);
@@ -118,14 +176,67 @@ class FeriadoController extends Controller
     }
 
     public function analisarData($date){
-        $dados_editar  = DB::table('ferias AS f')
+
+        $dados_ferias  = DB::table('ferias AS f')
         ->join('users', 'users.id', '=', 'f.users_id')
         ->select('*', 'f.id AS id','users.id as iduser', 'f.status As status')
         ->get();
 
+        $dados_feriados = DB::table('feriados AS u')
+        ->leftjoin('feriados_tipos', 'feriados_tipos.id', 'u.feriados_tipos_id')
+        ->leftjoin('feriado_users', 'feriado_users.feriados_id', 'u.id')
+        ->leftjoin('users', 'users.id', 'feriado_users.users_id')
+        ->select('*', 'u.id AS id')
+        ->orderBy('u.id','desc')
+        ->where('u.fn_data',$date)
+        ->get();
+
+
+        $dados_feriados_ok = null;
+
+        foreach($dados_feriados as $val){
+
+            $feriado_user  = DB::table('feriado_users AS f')
+            ->join('users', 'users.id', '=', 'f.users_id')
+            ->where('f.feriados_id', $val->id)
+            ->get();
+
+            if (count($feriado_user) > 0) {
+                foreach($feriado_user as $user){
+                    $dados_feriados_ok[] = [
+                        'id' => $val->id, 
+                        'feriados_tipos_id' => $val->feriados_tipos_id,
+                        'fn_data' => $val->fn_data,
+                        'fn_descricao' => $val->fn_descricao,
+                        'horas'=> $val->horas,
+                        'horas_user'=> $val->horas_user,
+                        'users_id'=> $val->users_id,
+                        'ftdescricao'=> $val->ftdescricao,
+                        'contrato'=> $user->contrato,
+                        'name'=> $user->name
+                    ];
+                }
+            }else{
+                $dados_feriados_ok[] = [
+                    'id' => $val->id, 
+                    'feriados_tipos_id' => $val->feriados_tipos_id,
+                    'fn_data' => $val->fn_data,
+                    'fn_descricao' => $val->fn_descricao,
+                    'horas'=> $val->horas,
+                    'horas_user'=> $val->horas_user,
+                    'users_id'=> $val->users_id,
+                    'ftdescricao'=> $val->ftdescricao,
+                    'contrato'=> $val->contrato,
+                    'name'=> $val->name
+                ];
+            }
+            
+        }
+
+
         $users = null;
 
-        foreach($dados_editar as $value){
+        foreach($dados_ferias as $value){
 
             $datainicio     = new DateTime($value->datainicio);
             $datafim     = new DateTime($value->datafim);
@@ -138,9 +249,15 @@ class FeriadoController extends Controller
             }
           
         }
-        if($users){
-            return view("pages.feriados.lista-ferias", compact('users'));
+
+
+
+
+        if($users || $dados_feriados_ok){
+            return view("pages.feriados.lista-ferias", compact('users','dados_feriados_ok'));
         }
+
+
         return $users;
                 
     }

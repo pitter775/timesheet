@@ -255,18 +255,18 @@
         id = $(this).data('id');    
         input = '#aldescricao'+id;
         tempo = $(this).val();     
-        if(tempo == '00'){ tempo = ''}
-        if(tempo == '0'){ tempo = ''}
+        // if(tempo == '00'){ tempo = ''}
+        // if(tempo == '0'){ tempo = ''}
 
 
         $(this).val(tempo);
 
         var result = $(input).val().split(':');
 
-        if(result[0] == undefined){result[0] = '00' }
-        if(result[0] == 'NaN'){result[0] = '00' }
-        if(result[1] == 'NaN'){result[1] = '00' }
-        if(result[1] == undefined){result[1] = '00' }
+        // if(result[0] == undefined){result[0] = '00' }
+        // if(result[0] == 'NaN'){result[0] = '00' }
+        // if(result[1] == 'NaN'){result[1] = '00' }
+        // if(result[1] == undefined){result[1] = '00' }
 
         console.log(result);
 

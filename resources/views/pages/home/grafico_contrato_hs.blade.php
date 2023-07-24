@@ -280,7 +280,8 @@
 
     $('#btvolta_contato').on('click',function(){        
         $('#front_contrato1').addClass('virar-front');            
-        $('#back_contrato1').addClass('virar-back');            
+        $('#back_contrato1').addClass('virar-back');        
+        $('.chardcardrigh').hide();      
     });
 
     

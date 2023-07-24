@@ -199,9 +199,9 @@
             foreach($dados_lista as $key => $value){
                 $class = 'dataferiado';
                 echo "{
-                        title: '$value->fn_descricao',
-                        start: '$value->fn_data 11:30:00',
-                          end: '$value->fn_data 11:50:00',
+                        title: '$value[fn_descricao]',
+                        start: '$value[fn_data] 11:30:00',
+                          end: '$value[fn_data] 11:50:00',
                    classNames: '$class', 
                         },";
             } 
@@ -216,6 +216,8 @@
             $('#fn_data').val(resultdata);
             $('.form-control').trigger("change");   
             analisarDataSelecionada(info.startStr);
+            console.log(info.startStr);
+
         },
         navLinkDayClick: function(date, jsEvent) {        
             let result = date.toISOString().split('T');  
@@ -224,6 +226,24 @@
             $('#fn_data_envio').val(result[0]);
             $('#fn_data').val(resultdata);
             $('.form-control').trigger("change");   
+            console.log('navLinkDayClick');
+        },
+
+        eventClick: function(info) {
+            // console.log('eventClick');
+            inicio = info.event.start;
+            // fim = info.event.end;
+            // data = [dataAtualFormatada(inicio), dataAtualFormatada(fim)];
+            // dados_select = {inicio:dataAtualFormatada(inicio), fim:dataAtualFormatada(fim), evento:'eventClick'};
+           
+            // console.log(dados_select);
+            data = dataAtualFormatada(inicio);
+            let result = data.split('-');
+            let resultdata = result[2]+'/'+result[1]+'/'+result[0];
+            $('#fn_data_envio').val(data);
+            $('#fn_data').val(resultdata);
+            $('.form-control').trigger("change");   
+            analisarDataSelecionada(dataAtualFormatada(inicio));
         },
         
         

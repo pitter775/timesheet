@@ -7,16 +7,15 @@
         "laravel"
     ],
     "license": "MIT",
-    "require": {
-        "php": "^7.3",
-        "components/bootstrap-switch": "dev-master",
+    "require": {     
+        "php": "^8.0",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
-        "laravel-frontend-presets/paper": "^1.0",
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
-        "laravel/ui": "^3.0",
+        "laravel/ui": "*",
+        "phpoffice/phpspreadsheet": "^1.28",
         "yajra/laravel-datatables-oracle": "^9.11"
     },
     "require-dev": {

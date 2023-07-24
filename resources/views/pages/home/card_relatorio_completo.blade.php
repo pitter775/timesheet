@@ -29,7 +29,9 @@
 
     /* #dexample_alo_dep_paginate{display: none;} */
 </style>
-<?php
+<?php 
+
+
 
 function converte_segundos($tempo)
 {
@@ -61,13 +63,16 @@ function horas_segundos2($total)
     $segundos = floor($total % 60);
     return $horas . "." . $minutos;
 }
-// dd($tablefull[0]);
+
+$conttab = 0;
+
 ?>
 <div class="row">
     <h5 style="padding: 20px;"> Relatório dos Usuários no período</h5>
     <table id="data_relatorio" class="table table-bordered" style="width:100%">
         <thead>
             <tr>
+                <th>id</th>
                 <th>Nome</th>
                 <th>Frente</th>
                 <th>ID/Contrato</th>
@@ -82,19 +87,20 @@ function horas_segundos2($total)
             @foreach($tablefull as $key => $value)
             
                 @foreach($value['contratos'] as $key => $val)
-                @if($value['nome'])
-
-                <tr>
-                    <td>{{$value['nome']}}</td>
-                    <td>{{$value['frente']}}</td>
-                    <td>{{$val['ctnumero'] ?? ''}}</td>
-                    <td>{{$val['contrato']}}</td>
-                    <td>{{$val['valorContrato']}}</td>
-                    <td>{{$val['segundosContrato']}}hs</td>
-                    <td>{{$value['segundosTotal']}}hs</td>
-                    <td>{{$value['total']}}</td>
-                </tr>
-                @endif
+                    <?php $conttab = $conttab + 1; ?>
+                    @if($value['nome'])
+                        <tr>
+                            <td>{{$conttab}}</td>
+                            <td>{{$value['nome'] ?? ''}}</td>
+                            <td>{{$value['frente']}}</td>
+                            <td>{{$val['ctnumero'] ?? ''}}</td>
+                            <td>{{$val['contrato'] ?? ''}}</td>
+                            <td>{{$val['valorContrato'] ?? ''}}</td>
+                            <td>{{$val['segundosContrato'] ?? ''}}</td>
+                            <td>{{$value['segundosTotal'] ?? ''}}</td>
+                            <td>{{$value['total'] ?? ''}}</td>
+                        </tr>
+                    @endif
                 @endforeach
             @endforeach
         </tbody>
@@ -114,13 +120,18 @@ function horas_segundos2($total)
             [30]
         ],
         responsive: true,
-        order: false,
+        order: true,
         language: {
             search: "_INPUT_",
             searchPlaceholder: "Buscar",
             "decimal": ",",
             "thousands": "."
-        }
+        },
+        "columnDefs": [{
+                "targets": [ 0 ],
+                "visible": false,
+                "searchable": false
+            }],
     });
 
     setTimeout(function() {

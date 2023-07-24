@@ -20,7 +20,8 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="fas fa-times"></i>
                 </button>
-                <h5>Usuários com férias nessa data</h5>
+                {{-- <h5>Usuários com férias nessa data</h5> --}}
+                <h3>Resumo nessa data</h3>
             </div>
             <div class="modal-body" id="retorno_tb_ferias" style="padding: 0 0 0px 0;">
                 teste               

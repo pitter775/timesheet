@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Style\Color;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Illuminate\Http\Response;
-use ZipArchive;
 
 
 
@@ -107,9 +104,6 @@ class HomeController extends Controller
                 break;
             case 'card_relatorio_completo_export':
                 return $this->card_relatorio_completo_export($request);
-                break;
-            case 'card_relatorio_export_d':
-                return $this->card_relatorio_export_d($request);
                 break;
         }
     }
@@ -2128,21 +2122,6 @@ class HomeController extends Controller
 
         return $horas;
     }
-    function horas_segundos_minutos($total)
-    {
-        $horas = floor($total / 3600);
-        $minutos = floor(($total - ($horas * 3600)) / 60);
-        $segundos = floor($total % 60);
-        if (strlen($minutos) == 1) {
-            $minutos = '0' . $minutos;
-        }
-        if (strlen($horas) == 1) {
-            $horas = '0' . $horas;
-        }
-
-
-        return $horas. '.' .$minutos;
-    }
     function horas_segundos_full($total)
     {
         $horas = floor($total / 3600);
@@ -2150,9 +2129,6 @@ class HomeController extends Controller
         $segundos = floor($total % 60);
         // if(strlen($minutos) == 1){ $minutos = '0'.$minutos;}
         // if(strlen($horas) == 1){ $horas = '0'.$horas;}
-
-        
-
         return $horas . '.' . $minutos;
     }
     function separa_datas($dateStart, $dateEnd)
@@ -2210,16 +2186,11 @@ class HomeController extends Controller
     {
         return view('pages.home.card_relatorio_completo_export');
     }
-
     function card_relatorio_completo(Request $request)
     {
-    
-        
         $data_inicio = $this->dateEmMysql($request->data_inicio);
         $data_fim = $this->dateEmMysql($request->data_fim);
-
         $dividir_datas = $this->separa_datas($data_inicio, $data_fim);
-
         $request->data_inicio = date('d/m/Y', strtotime($data_inicio));
         $request->data_fim = date('d/m/Y', strtotime($data_fim));
 
@@ -2227,8 +2198,6 @@ class HomeController extends Controller
         $groupBy = '';
         $orderBy = 'ORDER BY users.name ASC, contratos.ctnome, periodos.datainicio';
         $lista_usuarios_full = $this->filtros($request, $colunas, $groupBy, $orderBy);
-
-  
 
         $lista_usuarios_data = [];
 
@@ -2312,96 +2281,25 @@ class HomeController extends Controller
         return view('pages.home.card_relatorio_completo', compact('tablefull'));
 
     }  
-
-    function criarArrayMes($data_inicio, $data_fim){     
-
-        $data_inicio = date('Y-m-d', strtotime($data_inicio));
-        $data_fim = date('Y-m-d', strtotime($data_fim));
-
-        $dividir_datas = $this->separa_datas($data_inicio, $data_fim);
-        $data_inicio2 = date('d/m/Y', strtotime($data_inicio));
-        $data_fim2 = date('d/m/Y', strtotime($data_fim));
-        $request = array(
-            'data_inicio' =>  $data_inicio2,
-            'data_fim' => $data_fim2,
-            'usuario' => null,
-            'contrato' => null,
-            'produto' => null,
-            'atividade' => null,
-            'empreendimento' => null,
-            'equipe' => null,
-            'alocacao' => null,
-            'funcao' => null,
-            'departamento' => null,
-            'municipio' => null
+    
+    function relatorioExcel(){
+        $nomes_meses = array(
+            1 => 'janeiro',
+            2 => 'fevereiro',
+            3 => 'março',
+            4 => 'abril',
+            5 => 'maio',
+            6 => 'junho',
+            7 => 'julho',
+            8 => 'agosto',
+            9 => 'setembro',
+            10 => 'outubro',
+            11 => 'novembro',
+            12 => 'dezembro'
         );
 
-        $request = json_decode(json_encode($request));
-
-   
-        $colunas = 'users.id AS iduser, users.name, e.tarifa, funcaos.fndescricao, e.horas, e.contratos_id, contratos.ctnome, contratos.ctnumero, atividades.atdescricao, equipes.eqnome, periodos.datainicio';
-        $groupBy = '';
-        $orderBy = 'ORDER BY users.name ASC, contratos.ctnome, atividades.atdescricao, periodos.datainicio';
-        $filtro_ext = 'equipes.eqnome = "Frente 3"';
-        $lista_usuarios_full = $this->filtros($request, $colunas, $groupBy, $orderBy, $filtro_ext);
-
-        $lista_usuarios_data = [];
-
-        foreach ($lista_usuarios_full as $value) {
-            $segundos = $this->converte_segundos($value->horas);
-            $tarifa = trim($value->tarifa);
-            $valor = $this->tarifa_segundos($tarifa, $segundos);
-            $lista_usuarios_data[] = ['iduser' => $value->iduser, 'fndescricao'=>$value->fndescricao, 'segundos'=> $segundos, 'nome' => $value->name, 'valor' => $valor, 'frente'=>$value->eqnome, 'contrato' => $value->ctnome, 'ctnumero'=>$value->ctnumero, 'atdescricao'=>$value->atdescricao, 'periodoinit' => $value->datainicio];
-        }
-
-
-        //dd($lista_usuarios_full); horas_segundos_minutos   $this->horas_segundos($segundostotal);
-        $result = [];
-        // Percorrer o array fornecido
-        foreach ($lista_usuarios_full as $item) {
-            $name = $item->name;
-            $ctnome = $item->ctnome;
-            $atdescricao = $item->atdescricao;
-            $fndescricao = $item->fndescricao;
-            $ctnumero = $item->ctnumero;
-            $horas = $this->converte_segundos($item->horas);
-        
-            // Verificar se já existe um elemento com o mesmo nome e ctnome no resultado
-            if (isset($result[$name]['contratos'][$ctnome])) {
-                // Adicionar a atdescricao e somar as horas ao contrato existente
-                $result[$name]['name'] = $name;
-                $result[$name]['cargo'] = $fndescricao;
-                
-                $result[$name]['contratos'][$ctnome]['atividade'][] = ['atividade'=>$atdescricao, 'horas'=>$horas];
-                $result[$name]['contratos'][$ctnome]['ctnome'] = $ctnome;
-                $result[$name]['contratos'][$ctnome]['ctnumero'] = $ctnumero;
-                $result[$name]['contratos'][$ctnome]['totalHC'] += $horas;
-            } else {
-                // Criar um novo contrato com a atdescricao e horas
-                $result[$name]['name'] = $name;
-                $result[$name]['cargo'] = $fndescricao;
-                $result[$name]['contratos'][$ctnome] = [
-                    'atividade' => [['atividade'=>$atdescricao, 'horas'=>$horas]],                    
-                    'ctnome' => $ctnome,
-                    'ctnumero' => $ctnumero,
-                    'totalHC' => $horas
-                ];                
-            }
-        }
-
-        return $result;
-    }
-    
-    function exportar_excel(Request $request){
-
-
-        $data_inicio = date('Y-m-d', strtotime(request('fn_data_inicio')));
-        $data_fim = date('Y-m-d', strtotime(request('fn_data_fim')));
-
-        $nomes_meses = array(1 => 'Janeiro',2 => 'Fevereiro',3 => 'Março',4 => 'Abril',5 => 'Maio',6 => 'Junho',7 => 'Julho',8 => 'Agosto',9 => 'Setembro',10 => 'Outubro',11 => 'Novembro',12 => 'Dezembro');
-
-        $dataInicial = new DateTime($data_inicio);
-        $dataFinal = new DateTime($data_fim);
+        $dataInicial = new DateTime('2020-06-15');
+        $dataFinal = new DateTime('2023-05-15');
         
         $intervalo = $dataInicial->diff($dataFinal);
         
@@ -2431,9 +2329,6 @@ class HomeController extends Controller
 
         $contAno = 0;
         $contMes = 0;
-
-        // Criar um array para armazenar as planilhas
-        $planilhas = [];
         
 
         foreach ($intervaloPorAno as $ano => $meses) {
@@ -2445,164 +2340,72 @@ class HomeController extends Controller
                 $dataInicio = $datas['dataInicio'];
                 $dataFim = $datas['dataFim'];             
                 
-                // Criar uma nova aba (guia) com nome 
+                // Criar uma nova aba (guia) com nome 'Aba 1'
                 $sheet['sheet'.$contMes] = $spreadsheet->createSheet($contMes);
                 $nome_mes = $nomes_meses[$mes];
 
                 $sheet['sheet'.$contMes]->setTitle($nome_mes. '  '.$ano);               
 
-                // Adicionar conteúdo à aba 
+                // Adicionar conteúdo à aba 1
+                $sheet['sheet'.$contMes] ->setCellValue('A1', $ano);
+                $sheet['sheet'.$contMes] ->setCellValue('B1', $mes);
 
-                $dadosArray = $this->criarArrayMes($dataInicio, $dataFim);           
-
-                $sheet['sheet'.$contMes] ->setCellValue('A1', 'Nome');
-                $sheet['sheet'.$contMes]->getColumnDimension('A')->setWidth(38);
-                $style1 = $sheet['sheet'.$contMes]->getStyle('A1');
-                $style1->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('4472c4');
-                $style1->getFont()->setColor(new Color('ffffff')); 
-
-
-                $sheet['sheet'.$contMes] ->setCellValue('B1', 'Cargo');
-                $sheet['sheet'.$contMes]->getColumnDimension('B')->setWidth(30);
-                $style2 = $sheet['sheet'.$contMes]->getStyle('B1');
-                $style2->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('4472c4');
-                $style2->getFont()->setColor(new Color('ffffff'));
-
-                $sheet['sheet'.$contMes] ->setCellValue('C1', 'Id Contrato');
-                $sheet['sheet'.$contMes]->getColumnDimension('C')->setWidth(12);
-                $style3 = $sheet['sheet'.$contMes]->getStyle('C1');
-                $style3->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('4472c4');
-                $style3->getFont()->setColor(new Color('ffffff'));
-
-                $sheet['sheet'.$contMes] ->setCellValue('D1', 'Contrato');
-                $sheet['sheet'.$contMes]->getColumnDimension('D')->setWidth(40);
-                $style7 = $sheet['sheet'.$contMes]->getStyle('D1');
-                $style7->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('4472c4');
-                $style7->getFont()->setColor(new Color('ffffff'));
-
-                $sheet['sheet'.$contMes] ->setCellValue('E1', 'Atividade');
-                $sheet['sheet'.$contMes]->getColumnDimension('E')->setWidth(40);
-                $style4 = $sheet['sheet'.$contMes]->getStyle('E1');
-                $style4->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('4472c4');
-                $style4->getFont()->setColor(new Color('ffffff'));
-
-                $sheet['sheet'.$contMes] ->setCellValue('F1', 'H/Atividade');
-                $sheet['sheet'.$contMes]->getColumnDimension('F')->setWidth(12);
-                $style5 = $sheet['sheet'.$contMes]->getStyle('F1');
-                $style5->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('4472c4');
-                $style5->getFont()->setColor(new Color('ffffff'));
-
-                $sheet['sheet'.$contMes] ->setCellValue('G1', 'TH/Contrato');
-                $sheet['sheet'.$contMes]->getColumnDimension('G')->setWidth(12);
-                $style6 = $sheet['sheet'.$contMes]->getStyle('G1');
-                $style6->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('4472c4');
-                $style6->getFont()->setColor(new Color('ffffff'));
-
-                $contCel = 1;           
-           
-
-                foreach($dadosArray as $d){ 
-                    foreach($d['contratos'] as $c){                     
-                        foreach($c['atividade'] as $a){
-                            $horasF1 = $this->horas_segundos_minutos($a['horas']);
-                            $horasG1 = $this->horas_segundos_minutos($c['totalHC']);
-
-                            $horasF2 = $horasF1.' ';
-                            $horasF3 = str_replace(".", ":", $horasF2);
-                            $horasF3 = str_replace(",", ":", $horasF3);
-                      
-                            $horasF3 = str_replace(" ", "", $horasF3);
-
-                            $horasG2 =$horasG1.' ';
-                            $horasG3 = str_replace(".", ":", $horasG2);
-                            $horasG3 = str_replace(",", ":", $horasG3);
-                        
-                            $horasG3 = str_replace(" ", "", $horasG3);
-
-                            $contCel ++;
-                            $sheet['sheet'.$contMes] ->setCellValue('A'. $contCel, $d['name']);
-                            $sheet['sheet'.$contMes] ->setCellValue('B'. $contCel, $d['cargo']);
-                            $sheet['sheet'.$contMes] ->setCellValue('C'. $contCel, $c['ctnumero']);
-                            $sheet['sheet'.$contMes] ->setCellValue('D'. $contCel, $c['ctnome']);
-                            $sheet['sheet'.$contMes] ->setCellValue('E'. $contCel, $a['atividade']);
-                            $sheet['sheet'.$contMes] ->setCellValue('F'. $contCel, $horasF3);   
-                            $sheet['sheet'.$contMes] ->setCellValue('G'. $contCel, $horasG3);
-
-                            if ($contCel % 2 != 0) {
-                                $style011 = $sheet['sheet'.$contMes]->getStyle('A'. $contCel);
-                                $style011->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('d5e4fd');
-                                $style012 = $sheet['sheet'.$contMes]->getStyle('B'. $contCel);
-                                $style012->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('d5e4fd');
-                                $style013 = $sheet['sheet'.$contMes]->getStyle('C'. $contCel);
-                                $style013->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('d5e4fd');
-                                $style014 = $sheet['sheet'.$contMes]->getStyle('D'. $contCel);
-                                $style014->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('d5e4fd');
-                                $style015 = $sheet['sheet'.$contMes]->getStyle('E'. $contCel);
-                                $style015->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('d5e4fd');
-                                $style016 = $sheet['sheet'.$contMes]->getStyle('F'. $contCel);
-                                $style016->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('d5e4fd');
-                                $style017 = $sheet['sheet'.$contMes]->getStyle('G'. $contCel);
-                                $style017->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('d5e4fd');
-                             
-                            }
-                        }
-                    } 
-                }
-                $contMes++;         
+                $contMes++;            
                
             }
+            // Salvar a planilha em um stream
+            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+            $stream = fopen('php://temp', 'r+');
+            $writer->save($stream);
+            rewind($stream);
 
-
-            $nomePlanilha = 'relatorio'.$ano.'..xlsx';
-            $planilhas[] = [
-                'nome' => $nomePlanilha,
-                'objeto' => $spreadsheet,
-            ];
-
-            // // Salvar a planilha em um stream
-            // $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-            // $stream = fopen('php://temp', 'r+');
-            // $writer->save($stream);
-            // rewind($stream);
-
-            // // Retornar uma resposta HTTP com a planilha anexada
-            // $response = new Response(stream_get_contents($stream), 200, [
-            //     'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            //     'Content-Disposition' => 'attachment; filename="planilha.xlsx"',
-            // ]);
-            // fclose($stream);
+            // Retornar uma resposta HTTP com a planilha anexada
+            $response = new Response(stream_get_contents($stream), 200, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition' => 'attachment; filename="planilha.xlsx"',
+            ]);
+            fclose($stream);
 
           
             $contAno = $contAno +1;
 
-            //return $response;
-        }    
-
-        // Criar um arquivo ZIP
-        $zipName = 'arquivos.zip';
-
-        $zip = new ZipArchive();
-        if ($zip->open($zipName, ZipArchive::CREATE) === true) {
-            // Adicionar as planilhas ao ZIP
-            foreach ($planilhas as $planilha) {
-                $writer = IOFactory::createWriter($planilha['objeto'], 'Xlsx');
-                $stream = fopen('php://temp', 'r+');
-                $writer->save($stream);
-                rewind($stream);
-                $zip->addFromString($planilha['nome'], stream_get_contents($stream));
-                fclose($stream);
-            }
-
-            // Fechar o arquivo ZIP
-            $zip->close();
-
-            // Retornar uma resposta HTTP com o arquivo ZIP anexado
-            return response()
-                ->download($zipName, 'arquivos.zip')
-                ->deleteFileAfterSend(true);
-        } else {
-            // Lidar com erros ao criar o arquivo ZIP
-            echo 'Erro ao criar o arquivo ZIP';
+            return $response;
         }
+        
+        dd($intervaloPorAno);
+
+
+        // Criar uma nova planilha
+        $spreadsheet = new Spreadsheet();
+
+        // Criar uma nova aba (guia) com nome 'Aba 1'
+        $sheet1 = $spreadsheet->createSheet(0, 'Aba 1');
+
+        // Adicionar conteúdo à aba 1
+        $sheet1->setCellValue('A1', 'Valor 1');
+        $sheet1->setCellValue('B1', 'Valor 2');
+
+        // Criar uma nova aba (guia) com nome 'Aba 2'
+        $sheet2 = $spreadsheet->createSheet(1, 'Aba 2');
+
+        // Adicionar conteúdo à aba 2
+        $sheet2->setCellValue('A1', 'Valor 3');
+        $sheet2->setCellValue('B1', 'Valor 4');
+        $sheet2->setCellValue('C1', 'Valor 33');
+
+        // Salvar a planilha em um stream
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $stream = fopen('php://temp', 'r+');
+        $writer->save($stream);
+        rewind($stream);
+
+        // Retornar uma resposta HTTP com a planilha anexada
+        $response = new Response(stream_get_contents($stream), 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="planilha.xlsx"',
+        ]);
+        fclose($stream);
+
+        return $response;
     }
 }
